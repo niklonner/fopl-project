@@ -1,0 +1,7 @@
+/* Single Bracket */
+
+Single_bracket : bracket {
+    player_source: "~/players.json";
+    play_until: "1 player";
+    advance: 1;
+}

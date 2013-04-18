@@ -1,0 +1,9 @@
+/* Double Round-robin tournament */
+
+tournament : round-robin {
+    player_source: "~/players.json";
+    group_by: 2;
+    advance: all;
+    play_until: "2 rounds";
+    parrallell_games: 5;
+}

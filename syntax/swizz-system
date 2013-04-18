@@ -1,0 +1,8 @@
+/* swizz-system*/
+
+tournament : round-robin {
+    player_source: "~/players.json";
+    group: 2;
+    match_by: #player.wins;
+    play_until: "5 games";
+}

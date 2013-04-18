@@ -1,0 +1,23 @@
+/* Double bracket */
+
+winner_bracket : bracket {
+    player_source: "~/players.json";
+    group_by: 2;
+    advance: 1;
+    play_until: "1 player";
+    send {#player.losses >= 1} to loser_bracket; // Run after each game?
+    send advancing to final;
+}
+
+loser_bracket : bracket {
+    group_by: 2;
+    advance: 1;
+    play_until: "1 player";
+    send advancing to final;
+}
+
+final : bracket {
+    group_by: 2;
+    advance: 1;
+    play_until: "1 player";
+}

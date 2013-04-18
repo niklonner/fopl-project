@@ -1,0 +1,9 @@
+/* basic syntax */
+
+<subtournament-name> : <subtournament-type> {
+    <method-name>;
+    <method-name> <param>, <param>;
+    send <selection> to <subtournament-name>;
+}
+
+// <param> can be any number or a string enclosed in quotation-marks.
