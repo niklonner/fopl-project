@@ -1,4 +1,4 @@
-"Swagger" - a DFL for specifying tournament schemes.
+"Swagger" - a DSL for specifying tournament schemes.
 ====================================================
 
 Git-conventions
