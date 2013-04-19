@@ -1,0 +1,59 @@
+-- Att göra
+-- Set.attribute
+-- sendto som generellt metodanrop
+-- ta bort endast with attribut och inför referens till själva attributen
+-- tournament : round-robin
+
+comment "//";
+
+Prog. Program ::= [Stmt];
+
+terminator Stmt ";";
+--terminator Exp ";";
+
+SExp.       Stmt ::= Exp;
+SAss.       Stmt ::= Ident "=" Exp;
+SSend.      Stmt ::= "send" Set "to" Ident;
+
+SimpExpStr. SimpleExp ::= String;
+SimpExpInt. SimpleExp ::= Integer;
+
+ESimp.       Exp ::= SimpleExp;
+--EVar.       Exp ::= Var;
+ESet.       Exp ::= Set;
+
+--Var.        Var ::= Ident;
+
+SDiff.      Set ::= Set "minus" Set1;
+SUnionP.    Set ::= Set "+" Set1;          -- alt.
+SIntersect. Set1 ::= Set1 "intersect" Set2;
+SNot.       Set2 ::= "not" "in" Set;
+SHasAttr.   Set3 ::= "with" String;
+SAttrVal.   Set3 ::= "with" StringComparison;
+SVar.       Set4 ::= Ident;
+SSel.       Set4 ::= Selection;
+SUnion.     Set4 ::= "[" [Set] "]";
+
+
+SCmp.     StringComparison ::= String ComparisonOp SimpleExp; 
+
+CmpOpEq.  ComparisonOp ::= "=";
+CmpOpLt.  ComparisonOp ::= "<";
+CmpOpGt.  ComparisonOp ::= ">";
+CmpOpLeq.  ComparisonOp ::= "<=";
+CmpOpGeq.  ComparisonOp ::= ">=";
+
+coercions Set 4;
+
+Player.     Player ::= Ident;
+
+separator Set ",";
+
+SelTake.    Selection ::= "take" Location Part "from" Set;
+
+LTop.       Location ::= "top";
+LBottom.    Location ::= "bottom";
+
+PInt.       Part ::= Integer;
+PPerc.      Part ::= Integer "%";
+PFrac.      Part ::= Integer "/" Integer;
