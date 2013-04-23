@@ -6,7 +6,11 @@
 
 comment "//";
 
-Prog. Program ::= [Stmt];
+Prog. Program ::= [Tournament];
+
+Tournament.   Tournament ::= Ident "{" [Stmt] "}";
+
+terminator Tournament ";";
 
 terminator Stmt ";";
 --terminator Exp ";";
