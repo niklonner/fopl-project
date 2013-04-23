@@ -3,3 +3,13 @@
 *.o
 *.class
 *~
+bnfs/*.hs
+bnfs/*.aux
+bnfs/*.dvi
+bnfs/*.log
+bnfs/*.ps
+bnfs/*.tex
+bnfs/*.txt
+bnfs/*.x
+bnfs/*.y
+bnfs/Makefile
