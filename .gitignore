@@ -14,3 +14,4 @@ bnfc/*.x
 bnfc/*.y
 bnfc/Makefile
 bnfc/TestSwag
+bnfc/Swag
