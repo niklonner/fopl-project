@@ -11,12 +11,15 @@ SubTournament . SubT ::= Ident ":" Ident "{" [Stmt] "}";
 terminator Stmt ";";
 
 Assignment  . Stmt ::= Ident "=" Exp;
-ParamMethod . Stmt ::= Ident ":" [Exp];
-separator nonempty Exp ",";
+ParamMethod . Stmt ::= Ident ":" [Param];
+separator nonempty Param ",";
 Method      . Stmt ::= Ident;
 
-Eunion        . Exp  ::= "(" [Exp] ")";
-separator Exp ",";
+PExp        . Param ::= Exp;
+
+--Eunion        . Exp  ::= "[" [Exp] "]";
+
+--separator Exp ",";
 Eeq           . Exp  ::= Exp "==" Exp1;
 Elt           . Exp  ::= Exp "<" Exp1;
 Elteq         . Exp  ::= Exp "<=" Exp1;
