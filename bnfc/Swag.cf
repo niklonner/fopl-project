@@ -1,63 +1,38 @@
--- Att göra
--- Set.attribute
--- sendto som generellt metodanrop
--- ta bort endast with attribut och inför referens till själva attributen
--- tournament : round-robin
+--
+-- Grammar for the Swagger-language.
+--
 
 comment "//";
 
-Prog. Program ::= [Tournament];
+Program . Prog ::= [SubT];
+terminator nonempty SubT "";
 
-Tournament.   Tournament ::= Ident "{" [Stmt] "}";
-
-terminator Tournament ";";
-
+SubTournament . SubT ::= Ident ":" Ident "{" [Stmt] "}";
 terminator Stmt ";";
---terminator Exp ";";
-
-SExp.       Stmt ::= Exp;
-SAss.       Stmt ::= Ident "=" Exp;
-SSend.      Stmt ::= "send" Set "to" Ident;
-
-SimpExpStr. SimpleExp ::= String;
-SimpExpInt. SimpleExp ::= Integer;
-
-ESimp.       Exp ::= SimpleExp;
---EVar.       Exp ::= Var;
-ESet.       Exp ::= Set;
-
---Var.        Var ::= Ident;
-
-SDiff.      Set ::= Set "minus" Set1;
-SUnionP.    Set ::= Set "+" Set1;          -- alt.
-SIntersect. Set1 ::= Set1 "intersect" Set2;
-SNot.       Set2 ::= "not" "in" Set;
-SHasAttr.   Set3 ::= "with" String;
---SAttrVal.   Set3 ::= "with" StringComparison;
-SVar.       Set4 ::= Ident;
-SSel.       Set4 ::= Selection;
-SUnion.     Set4 ::= "[" [Set] "]";
 
 
-SCmp.     StringComparison ::= String ComparisonOp SimpleExp; 
+Assignment  . Stmt ::= Ident "=" Exp;
+ParamMethod . Stmt ::= Ident ":" [Exp];
+separator nonempty Exp ",";
+Method      . Stmt ::= Ident;
 
-CmpOpEq.  ComparisonOp ::= "=";
-CmpOpLt.  ComparisonOp ::= "<";
-CmpOpGt.  ComparisonOp ::= ">";
-CmpOpLeq.  ComparisonOp ::= "<=";
-CmpOpGeq.  ComparisonOp ::= ">=";
-
-coercions Set 4;
-
-Player.     Player ::= Ident;
-
-separator Set ",";
-
-SelTake.    Selection ::= "take" Location Part "from" Set;
-
-LTop.       Location ::= "top";
-LBottom.    Location ::= "bottom";
-
-PInt.       Part ::= Integer;
-PPerc.      Part ::= Integer "%";
-PFrac.      Part ::= Integer "/" Integer;
+Eunion        . Exp  ::= "(" [Exp] ")";
+separator Exp ",";
+Eeq           . Exp  ::= Exp "==" Exp1;
+Elt           . Exp  ::= Exp "<" Exp1;
+Elteq         . Exp  ::= Exp "<=" Exp1;
+Egt           . Exp  ::= Exp ">" Exp1;
+Egteq         . Exp  ::= Exp ">=" Exp1;
+Eadd          . Exp  ::= Exp "+" Exp1;
+Esub          . Exp  ::= Exp "-" Exp1;
+Eintersect    . Exp1 ::= Exp1 "&" Exp2;
+ENotIntersect . Exp1 ::= Exp1 "|" Exp2;
+Ediv          . Exp1 ::= Exp1 "/" Exp2;
+Emul          . Exp1 ::= Exp1 "*" Exp2;
+Emod          . Exp1 ::= Exp1 "%" Exp2;
+Epow          . Exp2 ::= Exp2 "^" Exp3;
+Efol          . Exp3 ::= Exp3 "." Ident;
+Eint          . Exp4 ::= Integer;
+EDouble       . Exp4 ::= Double;
+EVar          . Exp4 ::= Ident;
+coercions Exp 4;
