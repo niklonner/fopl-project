@@ -15,4 +15,4 @@ bnfc/*.y
 bnfc/Makefile
 bnfc/TestSwag
 bnfc/Swag
-bnfc/Player
+bnfc/Play/Play
