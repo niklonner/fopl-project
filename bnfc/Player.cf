@@ -1,0 +1,17 @@
+--
+-- Simple grammar for specifying players with attributes.
+--
+
+comment "//";
+Program . Prog ::= [Player];
+terminator Player "";
+
+Player . Player ::= Ident Ident "=" [Attr];
+separator Attr ",";
+
+Attribute . Attr ::= Ident;
+ValueAttribute . Attr ::= Ident ":" Val;
+
+IntegerValue . Val ::= Integer;
+DoubleValue . Val ::= Double;
+StringValue . Val ::= String;
