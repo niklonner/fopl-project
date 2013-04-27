@@ -16,3 +16,5 @@ bnfc/Makefile
 bnfc/TestSwag
 bnfc/Swag
 bnfc/Play/Play
+bnfc/Play/Makefile
+bnfc/Play/Play.tex

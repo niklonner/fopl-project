@@ -6,7 +6,7 @@ comment "//";
 Program . Prog ::= [Player];
 terminator Player "";
 
-Player . Player ::= Ident Ident "=" [Attr];
+Player . Player ::= Ident "=" [Attr];
 separator Attr ",";
 
 Attribute . Attr ::= Ident;
