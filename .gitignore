@@ -18,3 +18,4 @@ bnfc/Swag
 bnfc/Play/Play
 bnfc/Play/Makefile
 bnfc/Play/Play.tex
+*.info
