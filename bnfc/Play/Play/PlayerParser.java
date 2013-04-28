@@ -1,17 +1,98 @@
-package impl.parser;
+package Play;
 
+import Play.*;
+import Play.Absyn.*;
+
+import java_cup.runtime.*;
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
-import bnfc.Play.Absyn.*;
 
 public class PlayerParser {
-    public List<String, Object> parse(String path) {
+    List<Player> players;
+
+    private class Player {
+        //TODO: Change for the real player class when refactoring the package structure
     }
 
-    private class Parser implements Visitor {
+
+    /**
+     * For command-line testing
+     */
+    public static void main(String args[]) throws Exception {
+        Yylex l = null;
+        parser p;
+        try {
+            if (args.length == 0) l = new Yylex(System.in);
+            else l = new Yylex(new FileReader(args[0]));
+        }
+        catch(FileNotFoundException e) {
+            System.err.println("Error: File not found: " + args[0]);
+            System.exit(1);
+        }
+        p = new parser(l);
+        /* The default parser is the first-defined entry point. */
+        /* You may want to change this. Other options are: */
+        /* pListPlayer, pPlayer, pListAttr, pAttr, pVal */
+        try {
+            Play.Absyn.Prog parse_tree = p.pProg();
+            System.out.println();
+            System.out.println("Parse Succesful!");
+            System.out.println();
+            System.out.println("[Abstract Syntax]");
+            System.out.println();
+            System.out.println(PrettyPrinter.show(parse_tree));
+            System.out.println();
+            System.out.println("[Linearized Tree]");
+            System.out.println();
+            System.out.println(PrettyPrinter.print(parse_tree));
+
+            System.out.println("[Parsing output]");
+
+            Parser parser = new Parser();
+            parse_tree.accept(parser);
+        }
+        catch(Throwable e) {
+            System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+            System.err.println("     " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public List<Player> parse(String path) {
+        players = new ArrayList<>();
+        Yylex l = null;
+        parser p;
+
+        try {
+            l = new Yylex(new FileReader(path));
+        }
+        catch(FileNotFoundException e) {
+            System.err.println("Error: File not found: " + path);
+            System.exit(1);
+        }
+
+        p = new parser(l);
+
+        try {
+            Play.Absyn.Prog parse_tree = p.pProg();
+
+            Parser parser = new Parser();
+            parse_tree.accept(parser);
+        } catch(Throwable e) {
+            System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+            System.err.println("     " + e.getMessage());
+            System.exit(1);
+        }
+
+        return players;
+    }
+
+    private static class Parser implements Visitor {
         public void visitProg(Play.Absyn.Prog prog) {} //abstract class
         public void visitProgram(Play.Absyn.Program program) {
             /* Code For Program Goes Here */
+            System.out.println("lskjdflksj");
 
             if (program.listplayer_ != null) {program.listplayer_.accept(this);}
         }
