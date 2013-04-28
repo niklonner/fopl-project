@@ -9,5 +9,10 @@
 # Everything else can be generated.
 bnfc/Swag
 !bnfc/Swag/Swag.cf
-bnfc/Play
+bnfc/Play/*.*
+bnfc/Play/Makefile
+bnfc/Play/Play/*.*
+bnfc/Play/Play/Absyn/*.*
+bnfc/Play/Play/Yylex
+!bnfc/Play/Play/PlayerParser.java
 !bnfc/Play/Play.cf
