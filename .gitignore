@@ -3,19 +3,11 @@
 *.o
 *.class
 *~
-bnfc/*.hs
-bnfc/*.aux
-bnfc/*.dvi
-bnfc/*.log
-bnfc/*.ps
-bnfc/*.tex
-bnfc/*.txt
-bnfc/*.x
-bnfc/*.y
-bnfc/Makefile
-bnfc/TestSwag
-bnfc/Swag
-bnfc/Play/Play
-bnfc/Play/Makefile
-bnfc/Play/Play.tex
 *.info
+
+# Don't save bnfc-stuff except for the grammar.
+# Everything else can be generated.
+bnfc/Swag
+!bnfc/Swag/Swag.cf
+bnfc/Play
+!bnfc/Play/Play.cf
