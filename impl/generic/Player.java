@@ -29,6 +29,10 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         return name;
     }
 
+    public Integer getId() {
+        return this.id;
+    }
+
     @SuppressWarnings("unchecked")
     public ResultType setResult(ResultType result) {
         return (ResultType) attributes.put("result", result);
