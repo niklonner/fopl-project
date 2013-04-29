@@ -7,7 +7,7 @@
 
 # Don't save bnfc-stuff except for the grammar.
 # Everything else can be generated.
-bnfc/Swag
+bnfc/Swag/*
 !bnfc/Swag/Swag.cf
 bnfc/Play/*.*
 bnfc/Play/Makefile

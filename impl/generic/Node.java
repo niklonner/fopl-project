@@ -9,7 +9,7 @@ import util.Pair;
   End applications should observe Nodes objects to respond to changes.
 */
 
-public abstract class Node<ResultType extends Comparable<? super ResultType>> extends Observable {
+public abstract class Node<ResultType extends Comparable<? super ResultType>> extends Observable, implements PlayerReceiver {
     private static int nextId = 0;
     protected String name;
     protected SortedSet<Player<ResultType>> players;
