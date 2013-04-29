@@ -3,7 +3,6 @@ package generic;
 import java.util.*;
 
 /*
-  Simple example class for a specific Node type. Will probably not be used in final version.
   Represents a faceoff consisting of exactly two players. Highest score wins and is sent off to the next node.
  */
 
