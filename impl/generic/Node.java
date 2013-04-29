@@ -9,20 +9,21 @@ import util.Pair;
   End applications should observe Nodes objects to respond to changes.
 */
 
-public abstract class Node<ResultType extends Comparable<? super ResultType>> extends Observable, implements PlayerReceiver {
+public abstract class Node<ResultType extends Comparable<? super ResultType>> extends Observable
+    implements PlayerReceiver<ResultType> {
     private static int nextId = 0;
+    private int id;
     protected String name;
     protected SortedSet<Player<ResultType>> players;
-    protected List<Pair<Node, SetModifier>> toNodes;
-    protected List<Pair<SubTournament, SetModifier>> toSubTournaments;
+    protected List<Pair<PlayerReceiver, SetModifier>> toReceivers;
     protected Comparator<Player<ResultType>> comp;
 
     // only for use by Builder!
     private Node() {
+	id = nextId;
 	name = "node " + (nextId++);
 	players = new TreeSet<>();
-	toNodes = new LinkedList<>();
-	toSubTournaments = new LinkedList<>();
+	toReceivers = new LinkedList<>();
     }
 
     // maybe remove and only allow construction by Builder
@@ -33,20 +34,18 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     // maybe remove and only allow construction by Builder
     protected Node(String name,
 		   Comparator<Player<ResultType>> comp,
-		   List<Pair<Node, SetModifier>> toNodes,
-		   List<Pair<SubTournament, SetModifier>> toSubTournaments,
+		   List<Pair<PlayerReceiver, SetModifier>> toReceivers,
 		   SortedSet<Player<ResultType>> players,
 		   List<Observer> observers) {
 	this.name = name;
 	players = new TreeSet<>(comp);
-	this.toNodes = new LinkedList<>(toNodes);
+	this.toReceivers = new LinkedList<>(toReceivers);
     }
 
     protected Node(Builder<ResultType> builder) {
 	name = builder.name != null ? builder.name : "node " + nextId++;
 	players = builder.players;
-	toNodes = builder.toNodes;
-	toSubTournaments = builder.toSubTournaments;
+	toReceivers = builder.toReceivers;
 	comp = builder.comp;
 	for (Observer o : builder.observers) {
 	    addObserver(o);
@@ -56,8 +55,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     public static class Builder<ResultType extends Comparable<? super ResultType>> {
 	protected String name;
 	protected SortedSet<Player<ResultType>> players = new TreeSet<>();
-	protected List<Pair<Node, SetModifier>> toNodes = new LinkedList<>();
-	protected List<Pair<SubTournament, SetModifier>> toSubTournaments = new LinkedList<>();
+	protected List<Pair<PlayerReceiver, SetModifier>> toReceivers = new LinkedList<>();
 	protected Comparator<Player<ResultType>> comp;
 	protected List<Observer> observers = new LinkedList<>();
 
@@ -73,16 +71,9 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
 	    return this;
 	}
 
-	public Builder setToNodes(List<Pair<Node, SetModifier>> toNodes) {
-	    if (toNodes != null) {
-		this.toNodes = new LinkedList<>(toNodes);
-	    }
-	    return this;
-	}
-
-	public Builder setToSubTournaments(List<Pair<SubTournament, SetModifier>> toSubTournaments) {
-	    if (toSubTournaments != null) {
-		this.toSubTournaments = new LinkedList<>(toSubTournaments);
+	public Builder setToReceivers(List<Pair<PlayerReceiver, SetModifier>> toReceivers) {
+	    if (toReceivers != null) {
+		this.toReceivers = new LinkedList<>(toReceivers);
 	    }
 	    return this;
 	}
@@ -108,13 +99,21 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     // }
 
     /* "driver" method. Should rank players and, when appropriate, send them to next node */
-    public abstract void addResult(String playerName, ResultType result);
+    public abstract void addResult(Integer playerId, ResultType result);
     
     // public void addResult(Player p, int result) {
     // 	p.setResult(result);
     // 	stdNotify();
     // }
 
+    public void addReceiver(PlayerReceiver p, SetModifier s) {
+	toReceivers.add(new Pair<PlayerReceiver, SetModifier>(p,s));
+    }
+    
+    public void acceptPlayer(Player<ResultType> p) {
+	addPlayer(p);
+    }
+    
     public void addPlayer(Player<ResultType> p) {
 	players.add(p);
 	stdNotify();
