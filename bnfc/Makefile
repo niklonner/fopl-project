@@ -2,9 +2,9 @@ lib = ../../lib/:../../lib/Cup/java-cup-11a.jar
 impl = ../../impl
 
 
-all: Play Swag
+all: Play Play/Play/PlayerParser.class Swag
 
-Play: Play/Makefile Play/Play/PlayerParser.class
+Play: Play/Makefile
 	cd Play; export CLASSPATH=$(lib); make
 
 Play/Makefile: Play/Play.cf
