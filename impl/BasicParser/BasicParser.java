@@ -6,7 +6,7 @@ import java.io.*;
 
 public class BasicParser {
 
-    public static Swag.Absyn.Program parseTournamentFile(String fileName) {
+    public static Swag.Absyn.Prog parseTournamentFile(String fileName) {
         Yylex l = null;
         parser p;
         try
@@ -21,7 +21,7 @@ public class BasicParser {
         p = new parser(l);
         try
             {
-                return p.pProgram();
+                return p.pProg();
             }
         catch(Exception e) // sorry, but pProgram is this unspecific about its exceptions
             {

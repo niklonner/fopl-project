@@ -16,6 +16,7 @@ public class Player<ResultType extends Comparable<? super ResultType>>
     }
 
     public Player(String name) {
+        System.out.println("lskjfdlsjföaöaaa");
         this.id = nextId++;
         this.setName(name);
         attributes.put("result", null);

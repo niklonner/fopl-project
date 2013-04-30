@@ -16,3 +16,5 @@ bnfc/Play/Play/Absyn/*.*
 bnfc/Play/Play/Yylex
 !bnfc/Play/Play/PlayerParser.java
 !bnfc/Play/Play.cf
+
+!lib/Cup/java_cup*.class
