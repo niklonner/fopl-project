@@ -8,8 +8,8 @@ public class TestMain
 
   public static void main(String args[]) throws Exception
   {
-    Swag.Absyn.Program p = BasicParser.parseTournamentFile(args[0]);
+    Swag.Absyn.Prog p = BasicParser.parseTournamentFile(args[0]);
     System.out.println("Alright, managed to parse!");
-//    p.accept(new generic.GenericVisitor());
+    //p.accept(new generic.GenericVisitor());
   }
 }
