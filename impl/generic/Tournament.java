@@ -4,9 +4,9 @@ import java.util.*;
 
 public class Tournament implements Iterable<SubTournament<?>> {
     private List<SubTournament<?>> subtournaments;
-    
+
     public Tournament() {
-	subtournaments = new ArrayList<>();
+        subtournaments = new ArrayList<>();
     }
 
     // returns true if add is ok (name doesnt already exist)
@@ -20,6 +20,6 @@ public class Tournament implements Iterable<SubTournament<?>> {
     // }
 
     public Iterator<SubTournament<?>> iterator() {
-	return subtournaments.iterator();
+        return subtournaments.iterator();
     }
 }

@@ -7,7 +7,7 @@ comment "//";
 Program . Prog ::= [SubT];
 terminator nonempty SubT "";
 
-SubTournament . SubT ::= Ident ":" Ident "{" [Stmt] "}";
+SubTournament . SubT ::= String ":" Ident "{" [Stmt] "}";
 terminator Stmt ";";
 
 
