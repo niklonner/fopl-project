@@ -8,6 +8,11 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     private int advancing;
     private int numPlayers;
 
+    // only for use by Builder
+    private Bracket() {
+
+    }
+
     // preconditions: numPlayers is 2^n for some positive integer n
     //                numPlayers % groupBy == 0
     //                0 < advancing <= groupBy
@@ -28,6 +33,28 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
 	}
     }
 
+    public Bracket(Builder<ResultType> builder) {
+	super(builder);
+    }	
+
+    public static class Builder<ResultType extends Comparable<? super ResultType>>
+	extends SubTournament.Builder<Bracket.Builder<ResultType>, ResultType> {
+	protected Bracket<ResultType> subTournament;
+
+	public Builder() {
+	    super();
+	}
+
+	protected SubTournament<ResultType> createSubTournament() {
+	    subTournament = new Bracket<>();
+	    return subTournament;
+	}
+
+	protected Builder<ResultType> me() {
+	    return this;
+	}
+    }
+    
     // remaining is the number of players able to enter the (current) last node level
     // returns number of players able to enter the (current) last node level
     private int buildNewLevel(int remaining) {
