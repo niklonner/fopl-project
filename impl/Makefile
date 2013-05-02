@@ -4,7 +4,7 @@ lib = ../lib/:../lib/Cup/java-cup-11a.jar
 CP = .:$(lib):$(SWAGDIR)
 SWAGDIR = ../bnfc/Swag
 
-test: Player BasicParser TestMain Node SubTournament Tournament Bracket
+test: Player BasicParser TestMain Node SubTournament Tournament Bracket BracketNode
 
 #GenericVisitor temprarily removed
 
@@ -22,6 +22,10 @@ SubTournament: generic/SubTournament.java
 
 Bracket: generic/Bracket.java
 	javac -cp $(CP) generic/Bracket.java
+
+BracketNode: generic/BracketNode.java
+	javac -cp $(CP) generic/BracketNode.java
+
 
 BasicParser: BasicParser/BasicParser.java
 	cp BasicParser/BasicParser.java $(SWAGDIR)/Swag/

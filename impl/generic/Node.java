@@ -18,73 +18,79 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     protected List<Pair<PlayerReceiver, SetModifier>> toReceivers;
     protected Comparator<Player<ResultType>> comp;
 
-    // only for use by Builder!
-    private Node() {
+    // only for use by subclasses
+    protected Node() {
         id = nextId;
         name = "node " + (nextId++);
         players = new TreeSet<>();
         toReceivers = new LinkedList<>();
     }
 
-    // maybe remove and only allow construction by Builder
-    protected Node(String name) {
-        //	this(name, null);
-    }
+    // // maybe remove and only allow construction by Builder
+    // protected Node(String name) {
+    //     //	this(name, null);
+    // }
 
-    // maybe remove and only allow construction by Builder
-    protected Node(String name,
-            Comparator<Player<ResultType>> comp,
-            List<Pair<PlayerReceiver, SetModifier>> toReceivers,
-            SortedSet<Player<ResultType>> players,
-            List<Observer> observers) {
-        this.name = name;
-        players = new TreeSet<>(comp);
-        this.toReceivers = new LinkedList<>(toReceivers);
-    }
+    // // maybe remove and only allow construction by Builder
+    // protected Node(String name,
+    //         Comparator<Player<ResultType>> comp,
+    //         List<Pair<PlayerReceiver, SetModifier>> toReceivers,
+    //         SortedSet<Player<ResultType>> players,
+    //         List<Observer> observers) {
+    //     this.name = name;
+    //     players = new TreeSet<>(comp);
+    //     this.toReceivers = new LinkedList<>(toReceivers);
+    // }
 
     protected Node(Builder<ResultType> builder) {
-        name = builder.name != null ? builder.name : "node " + nextId++;
-        players = builder.players;
-        toReceivers = builder.toReceivers;
-        comp = builder.comp;
+        name = builder.node.name;
+        players = builder.node.players;
+        toReceivers = builder.node.toReceivers;
+        comp = builder.node.comp;
         for (Observer o : builder.observers) {
             addObserver(o);
         }
+	
     }
 
-    public static class Builder<ResultType extends Comparable<? super ResultType>> {
-        protected String name;
-        protected SortedSet<Player<ResultType>> players = new TreeSet<>();
-        protected List<Pair<PlayerReceiver, SetModifier>> toReceivers = new LinkedList<>();
-        protected Comparator<Player<ResultType>> comp;
-        protected List<Observer> observers = new LinkedList<>();
+    public static abstract class Builder<ResultType extends Comparable<? super ResultType>> {
+	protected Node<ResultType> node;
+	protected List<Observer> observers;
 
+	public Builder() {
+	    node = createNode();
+	}
+	
+	protected abstract Node<ResultType> createNode();
+	
         public Builder name(String name) {
-            this.name = name;
+	    node.name = name;
             return this;
         }
 
         public Builder setPlayers(SortedSet<Player<ResultType>> players) {
             if (players != null) {
-                this.players = new TreeSet<>(players);
+                node.players = new TreeSet<>(players);
             }
             return this;
         }
 
         public Builder setToReceivers(List<Pair<PlayerReceiver, SetModifier>> toReceivers) {
             if (toReceivers != null) {
-                this.toReceivers = new LinkedList<>(toReceivers);
+                node.toReceivers = new LinkedList<>(toReceivers);
             }
             return this;
         }
 
         public Builder setComparator(Comparator<Player<ResultType>> comp) {
-            this.comp = comp;
+            node.comp = comp;
             return this;
         }
 
         public Builder setObservers(List<Observer> observers) {
-            this.observers = new LinkedList<>(observers);
+	    if (observers != null) {
+		this.observers = new LinkedList<>(observers);
+	    }
             return this;
         }
     }
