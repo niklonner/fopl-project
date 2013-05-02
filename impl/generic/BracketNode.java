@@ -9,19 +9,28 @@ import java.util.*;
 public class BracketNode<ResultType extends Comparable<? super ResultType>> extends Node<ResultType> {
     private int numPlayers;
 
+    // for use by builder only
+    private BracketNode() {
+
+    }
+    
     public BracketNode(Builder<ResultType> builder) {
 	super(builder);
 	this.numPlayers = numPlayers;
     }
 
-    // Even if this Builder subclass does not introduce anything new
-    // it is still here for consistency.
     public static class Builder<ResultType extends Comparable<? super ResultType>>
 	extends Node.Builder<ResultType> {
+	protected BracketNode<ResultType> node;
 	private int numPlayers;
 
+	protected Node<ResultType> createNode() {
+	    node = new BracketNode<ResultType>();
+	    return node;
+	}
+	
 	public Builder setNumPlayers(int numPlayers) {
-	    this.numPlayers = numPlayers;
+	    this.node.numPlayers = numPlayers;
 	    return this;
 	}
     }
