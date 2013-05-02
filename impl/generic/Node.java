@@ -22,8 +22,6 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     protected Node() {
         id = nextId;
         name = "node " + (nextId++);
-        players = new TreeSet<>();
-        toReceivers = new LinkedList<>();
     }
 
     // // maybe remove and only allow construction by Builder
@@ -42,7 +40,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     //     this.toReceivers = new LinkedList<>(toReceivers);
     // }
 
-    protected Node(Builder<ResultType> builder) {
+    protected Node(Builder<?,ResultType> builder) {
         name = builder.node.name;
         players = builder.node.players;
         toReceivers = builder.node.toReceivers;
@@ -53,7 +51,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
 	
     }
 
-    public static abstract class Builder<ResultType extends Comparable<? super ResultType>> {
+    public static abstract class Builder<T extends Builder<T, ResultType>, ResultType extends Comparable<? super ResultType>> {
 	protected Node<ResultType> node;
 	protected List<Observer> observers;
 
@@ -62,36 +60,37 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
 	}
 	
 	protected abstract Node<ResultType> createNode();
+	protected abstract T me();
 	
-        public Builder name(String name) {
+        public T name(String name) {
 	    node.name = name;
-            return this;
+            return me();
         }
 
-        public Builder setPlayers(SortedSet<Player<ResultType>> players) {
+        public T setPlayers(SortedSet<Player<ResultType>> players) {
             if (players != null) {
                 node.players = new TreeSet<>(players);
             }
-            return this;
+            return me();
         }
 
-        public Builder setToReceivers(List<Pair<PlayerReceiver, SetModifier>> toReceivers) {
+        public T setToReceivers(List<Pair<PlayerReceiver, SetModifier>> toReceivers) {
             if (toReceivers != null) {
                 node.toReceivers = new LinkedList<>(toReceivers);
             }
-            return this;
+            return me();
         }
 
-        public Builder setComparator(Comparator<Player<ResultType>> comp) {
+        public T setComparator(Comparator<Player<ResultType>> comp) {
             node.comp = comp;
-            return this;
+            return me();
         }
 
-        public Builder setObservers(List<Observer> observers) {
+        public T setObservers(List<Observer> observers) {
 	    if (observers != null) {
 		this.observers = new LinkedList<>(observers);
 	    }
-            return this;
+            return me();
         }
     }
 
