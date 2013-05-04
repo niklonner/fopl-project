@@ -10,16 +10,14 @@ terminator nonempty SubT "";
 SubTournament . SubT ::= Ident ":" Ident "{" [Stmt] "}";
 terminator Stmt ";";
 
+
 Assignment  . Stmt ::= Ident "=" Exp;
-ParamMethod . Stmt ::= Ident ":" [Param];
-separator nonempty Param ",";
+ParamMethod . Stmt ::= Ident ":" [Exp];
+separator nonempty Exp ",";
 Method      . Stmt ::= Ident;
 
-PExp        . Param ::= Exp;
-
---Eunion        . Exp  ::= "[" [Exp] "]";
-
---separator Exp ",";
+Eunion        . Exp  ::= "(" [Exp] ")";
+separator Exp ",";
 Eeq           . Exp  ::= Exp "==" Exp1;
 Elt           . Exp  ::= Exp "<" Exp1;
 Elteq         . Exp  ::= Exp "<=" Exp1;
