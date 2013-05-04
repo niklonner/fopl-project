@@ -39,12 +39,31 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
             return this;
         }
     }
+
+    public void acceptPlayer(Player<ResultType> p) {
+        super.acceptPlayer(p);
+        p.resetResult();
+    }
     
     public void addResult(Integer playerId, ResultType result) {
-        
+        Iterator<Player<ResultType>> it = players.iterator();
+        Player<ResultType> p = null;
+        while (it.hasNext() && (p=it.next()).getId()!=playerId) {
+        }
+        if (p.getId() == playerId) {
+            p.setResult(result);
+        }
+        if (allResultsSet()) {
+            sendPlayersOff();
+        }
     }
 
     private boolean allResultsSet() {
-        return false;
+        for (Player<?> p : players) {
+            if (!p.resultIsSet()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

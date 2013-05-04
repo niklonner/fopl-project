@@ -15,7 +15,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     private int id;
     protected String name;
     protected SortedSet<Player<ResultType>> players;
-    protected List<Pair<PlayerReceiver, SetModifier>> toReceivers;
+    protected List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> toReceivers;
     protected Comparator<Player<ResultType>> comp;
 
     // only for use by subclasses
@@ -74,7 +74,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
             return me();
         }
 
-        public T setToReceivers(List<Pair<PlayerReceiver, SetModifier>> toReceivers) {
+        public T setToReceivers(List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> toReceivers) {
             if (toReceivers != null) {
                 node.toReceivers = new LinkedList<>(toReceivers);
             }
@@ -98,32 +98,31 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         return name;
     }
 
-    // public void addResult(String playerName, int result) {
-    //  addResult(players.get(playerName), result);
-    //  stdNotify();
-    // }
-
     /* "driver" method. Should rank players and, when appropriate, send them to next node */
     public abstract void addResult(Integer playerId, ResultType result);
 
-    // public void addResult(Player p, int result) {
-    //  p.setResult(result);
-    //  stdNotify();
-    // }
-
-    public void addReceiver(PlayerReceiver p, SetModifier s) {
-        toReceivers.add(new Pair<PlayerReceiver, SetModifier>(p,s));
+    public void addReceiver(PlayerReceiver<ResultType> p, SetModifier<Player<ResultType>> s) {
+        toReceivers.add(new Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>(p,s));
     }
 
     public void acceptPlayer(Player<ResultType> p) {
-        addPlayer(p);
-    }
-
-    public void addPlayer(Player<ResultType> p) {
         players.add(p);
         stdNotify();
     }
+    /*
+    public void addPlayer(Player<ResultType> p) {
+        players.add(p);
+        stdNotify();
+        }*/
 
+    protected void sendPlayersOff() {
+        for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
+            for (Player<ResultType> p : pair.snd.apply(players)) {
+                pair.fst.acceptPlayer(p);
+            }
+        }
+    }
+    
     private void stdNotify() {
         setChanged();
         notifyObservers();
