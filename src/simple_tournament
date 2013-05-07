@@ -1,0 +1,3 @@
+"Tournament Name" : bracket {
+    group_by: 2;
+}

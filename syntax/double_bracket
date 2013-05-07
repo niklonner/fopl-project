@@ -1,6 +1,6 @@
 /* Double bracket */
 
-winner_bracket : bracket {
+"winner bracket" : bracket {
     player_source: "~/players.json";
     group_by: 2;
     advance: 1;
@@ -9,14 +9,14 @@ winner_bracket : bracket {
     send advancing to final;
 }
 
-loser_bracket : bracket {
+"loser bracket" : bracket {
     group_by: 2;
     advance: 1;
     play_until: "1 player";
     send advancing to final;
 }
 
-final : bracket {
+"final" : bracket {
     group_by: 2;
     advance: 1;
     play_until: "1 player";
