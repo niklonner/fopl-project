@@ -14,8 +14,8 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     private static int nextId = 0;
     private int id;
     protected String name;
-    protected SortedSet<Player<ResultType>> players;
-    protected List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> toReceivers;
+    protected SortedSet<Player<ResultType>> players = new TreeSet<>();
+    protected List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> toReceivers = new ArrayList<>();
     protected Comparator<Player<ResultType>> comp;
 
     // only for use by subclasses
@@ -41,6 +41,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     // }
 
     protected Node(Builder<?,ResultType> builder) {
+        id = builder.node.id;
         name = builder.node.name;
         players = builder.node.players;
         toReceivers = builder.node.toReceivers;
@@ -93,6 +94,10 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -120,6 +125,10 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
                 pair.fst.acceptPlayer(p);
             }
         }
+    }
+    
+    public String toString() {
+        return "node " + getId();
     }
 
     private void stdNotify() {
