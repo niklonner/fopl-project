@@ -74,7 +74,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
-        public Builder<ResultType> sendlosersTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+        public Builder<ResultType> sendlosersto(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             return sendtopernode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, mod));
         }
         

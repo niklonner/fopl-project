@@ -1,8 +1,9 @@
 # I have no idea how to write make files.
 
 lib = ../lib/:../lib/Cup/java-cup-11a.jar
-CP = .:$(lib):$(SWAGDIR)
+CP = .:$(lib):$(SWAGDIR):$(PLAYDIR)
 SWAGDIR = ../bnfc/Swag
+PLAYDIR = ../bnfc/Play
 
 all: Player TournamentParser.class BasicParser TestMain Node SubTournament Tournament Bracket BracketNode
 
