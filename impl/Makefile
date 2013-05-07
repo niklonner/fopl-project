@@ -29,6 +29,8 @@ Bracket: generic/Bracket.java
 BracketNode: generic/BracketNode.java
 	javac -cp $(CP) generic/BracketNode.java
 
+util:
+	javac -cp $(CP) util/*.java
 
 BasicParser: BasicParser/BasicParser.java
 	cp BasicParser/BasicParser.java $(SWAGDIR)/Swag/
