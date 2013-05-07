@@ -58,6 +58,7 @@ public class TournamentParser {
     public static class Worker implements Visitor {
         List<Object> param;
         generic.SubTournament.Builder<?,Integer> builder;
+        ReflectionHelper rh = new ReflectionHelper();
 
         public void visitProg(Swag.Absyn.Prog prog) {} //abstract class
         public void visitProgram(Swag.Absyn.Program program) {
@@ -87,7 +88,7 @@ public class TournamentParser {
                     break;
                 default:
                     //TODO: raise errror
-                break;
+                    break;
             }
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
@@ -115,21 +116,11 @@ public class TournamentParser {
 
             if (parammethod.listexp_ != null) {parammethod.listexp_.accept(this);}
 
-            Class[] paramTypes = new Class[param.size()];
-
-            for(int i = 0; i < paramTypes.length; i++) {
-                paramTypes[i] = param.get(i).getClass();
-            }
-
-            java.lang.reflect.Method method;
-
             try {
-                method = builder.getClass().getMethod(parammethod.ident_, paramTypes);
-            } catch (SecurityException e) {
-                e.printStackTrace();
+                rh.call(builder, rh.toCamelCase(parammethod.ident_), param);
             } catch (NoSuchMethodException e) {
-                System.err.println(builder.getClass() + "doesn't contain the method: " + parammethod.ident_);
                 e.printStackTrace();
+                System.exit(1);
             }
         }
 
@@ -253,11 +244,8 @@ public class TournamentParser {
             efol.exp_.accept(this);
             visitIdent(efol.ident_);
         }
-        public void visitEint(Swag.Absyn.Eint eint)
-        {
-            /* Code For Eint Goes Here */
-
-            visitInteger(eint.integer_);
+        public void visitEint(Swag.Absyn.Eint eint) {
+            param.add(eint.integer_);
         }
         public void visitEDouble(Swag.Absyn.EDouble edouble)
         {

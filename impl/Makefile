@@ -1,36 +1,27 @@
-# I have no idea how to write make files.
-
-LIB = ../lib/:../LIB/Cup/java-cup-11a.jar
+LIB = ../lib/:../lib/Cup/java-cup-11a.jar
 SWAGDIR = ../bnfc/Swag
 CP = .:$(LIB):$(SWAGDIR)
 TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
 
-all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player
+all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player util/ReflectionHelper.class
 
-parse: BasicParser TestMain Node SubTournament Tournament Bracket BracketNode Player TournamentParser.class
+parse: all
 	java -cp $(CP) TournamentParser ../src/simple_tournament
 
-quick: TournamentParser.class
-	java -cp $(CP) TournamentParser ../src/simple_tournament
 
-quickMake: util/ReflectionHelper.class
-
-quickRun: util/ReflectionHelper.class
-	java -cp $(CP) util.ReflectionHelper __camel_cased
+quick: util/ReflectionHelper.class
+	@#java -cp $(CP) util.ReflectionHelper
 
 
+# Compile and run tests
 test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
-
-testRun: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 	java -cp $(CP):$(TEST) org.junit.runner.JUnitCore AllTests
 
-../test/AllTests.class: ../test/AllTests.java
+../test/AllTests.class: ../test/util/ReflectionHelperTest.class ../test/AllTests.java
 	javac -cp $(CP):$(TEST) ../test/AllTests.java
 
-../test/util/ReflectionHelperTest.class: ../test/util/ReflectionHelperTest.java
+../test/util/ReflectionHelperTest.class: util/reflectionhelper.class ../test/util/ReflectionHelperTest.java
 	javac -cp $(CP):$(TEST) ../test/util/ReflectionHelperTest.java
-
-
 
 
 #GenericVisitor temprarily removed

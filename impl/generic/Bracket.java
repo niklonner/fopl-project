@@ -4,25 +4,25 @@ import java.util.*;
 import util.*;
 
 // KEYWORDS
-// sendto
-// groupby
-// playuntil
+// sendTo
+// groupBy
+// playUntil
 // advance
-// sendlosersto
-// sendtopernode
+// sendLosersTo
+// sendToPerNode
 
 public class Bracket<ResultType extends Comparable<? super ResultType>> extends SubTournament<ResultType> {
     private int groupBy;
     private int advancing;
     private int playUntil;
     private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
-    // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
+    // perNodeReceivers allows sendTo statements per node. This is used for sending losers of each node, for example.
     private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
 
     private List<BracketNodeLayer> nodeLayers = new ArrayList<>();
     private FinalLayerNode finalLayer;
     private boolean built = false;
-    
+
     // only for use by Builder
     private Bracket() {
         super();
@@ -54,17 +54,17 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
-        public Builder<ResultType> sendto(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+        public Builder<ResultType> sendTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.receivers.add(new Pair<>(receiver,mod));
             return this;
         }
 
-        public Builder<ResultType> groupby(int groupBy) {
+        public Builder<ResultType> groupBy(int groupBy) {
             subTournament.groupBy = groupBy;
             return this;
         }
-        
-        public Builder<ResultType> playuntil(int playUntil) {
+
+        public Builder<ResultType> playUntil(int playUntil) {
             subTournament.playUntil = playUntil;
             return this;
         }
@@ -74,16 +74,16 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
-        public Builder<ResultType> sendlosersTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
-            return sendtopernode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, mod));
+        public Builder<ResultType> sendLosersTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+            return sendToPerNode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, mod));
         }
-        
-        public Builder<ResultType> sendtopernode(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+
+        public Builder<ResultType> sendToPerNode(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.perNodeReceivers.add(new Pair<>(receiver, mod));
             return this;
         }
-        
-    }    
+
+    }
 
     // should perhaps be named addPlayer
     public void acceptPlayer(Player<ResultType> p) {
@@ -141,16 +141,16 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                 sendPlayersOff();
             }
         }
-        
+
         public void addResult(Integer i, ResultType r) {
             // should not be called
         }
     }
-    
+
     private class BracketNodeLayer {
         List<BracketNode<ResultType>> nodes = new ArrayList<>();
         SetModifier<Player<ResultType>> advancingMod;
-        
+
         BracketNodeLayer(int numNodes) {
             advancingMod = new TopMod<Player<ResultType>>(advancing);
             for (int i=0;i<numNodes;i++) {
