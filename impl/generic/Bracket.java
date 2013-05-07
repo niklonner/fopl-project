@@ -119,12 +119,13 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         }
         previousLayer.connectWith(finalLayer);
         built = true;
+        System.out.println(nodes.size() + " nodes");
     }
 
     private int numPlayersWithLevel(int level) {
         int ret = 0;
         for (Player p : players) {
-            if ((int)p.getAttribute("level")==level) {
+            if ((!p.attributeIsSet("level") && level==0) || (p.attributeIsSet("level") && (int)p.getAttribute("level")==level)) {
                 ret++;
             }
         }
@@ -156,6 +157,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             for (int i=0;i<numNodes;i++) {
                 BracketNode.Builder<ResultType> builder = new BracketNode.Builder<>();
                 builder.setNumPlayers(groupBy);
+                builder.setObservers(observers);
                 // set comparator
                 // set observers
                 BracketNode<ResultType> newNode = new BracketNode<ResultType>(builder);

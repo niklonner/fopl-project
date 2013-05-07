@@ -66,4 +66,10 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         }
         return true;
     }
+    
+    public void addObserver(Observer o) {
+        super.addObserver(o);
+        setChanged();
+        notifyObservers(getId());
+    }
 }
