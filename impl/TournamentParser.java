@@ -4,23 +4,17 @@
 import Swag.*;
 import Swag.Absyn.*;
 
-//import generic.Player;
+import generic.*;
+import util.*;
 
 import java_cup.runtime.*;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.lang.reflect.*;
+
 public class TournamentParser {
-
-    private static class SubTournament {
-        String name = "";
-
-        public SubTournament(String name) {
-            this.name = name;
-        }
-    }
-
 
     /**
      * For simple command-line testing
@@ -32,6 +26,7 @@ public class TournamentParser {
             Worker visitor = new Worker();
             parse_tree.accept(visitor);
         }
+    }
 
 
     //public void parse(String path) {
@@ -61,8 +56,8 @@ public class TournamentParser {
     //}
 
     public static class Worker implements Visitor {
-
-        SubTournament subt;
+        List<Object> param;
+        generic.SubTournament.Builder<?,Integer> builder;
 
         public void visitProg(Swag.Absyn.Prog prog) {} //abstract class
         public void visitProgram(Swag.Absyn.Program program) {
@@ -79,15 +74,22 @@ public class TournamentParser {
             }
         }
         public void visitSubT(Swag.Absyn.SubT subt) {} //abstract class
-        public void visitSubTournament(Swag.Absyn.SubTournament subtournament)
-        {
+        public void visitSubTournament(Swag.Absyn.SubTournament subtournament) {
             /* Code For SubTournament Goes Here */
 
             System.out.println("Making tournament: " + subtournament.string_);
-            subt = new SubTournament(subtournament.string_);
+            //subt = new SubTournament(subtournament.string_);
 
-            visitString(subtournament.string_);
-            visitIdent(subtournament.ident_);
+
+            switch (subtournament.ident_) {
+                case "bracket":
+                    builder = new Bracket.Builder<Integer>();
+                    break;
+                default:
+                    //TODO: raise errror
+                break;
+            }
+
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
         }
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)
@@ -107,13 +109,30 @@ public class TournamentParser {
             visitIdent(assignment.ident_);
             assignment.exp_.accept(this);
         }
-        public void visitParamMethod(Swag.Absyn.ParamMethod parammethod)
-        {
-            /* Code For ParamMethod Goes Here */
 
-            visitIdent(parammethod.ident_);
+        public void visitParamMethod(Swag.Absyn.ParamMethod parammethod) {
+            param = new ArrayList<>();
+
             if (parammethod.listexp_ != null) {parammethod.listexp_.accept(this);}
+
+            Class[] paramTypes = new Class[param.size()];
+
+            for(int i = 0; i < paramTypes.length; i++) {
+                paramTypes[i] = param.get(i).getClass();
+            }
+
+            java.lang.reflect.Method method;
+
+            try {
+                method = builder.getClass().getMethod(parammethod.ident_, paramTypes);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                System.err.println(builder.getClass() + "doesn't contain the method: " + parammethod.ident_);
+                e.printStackTrace();
+            }
         }
+
         public void visitMethod(Swag.Absyn.Method method)
         {
             /* Code For Method Goes Here */
