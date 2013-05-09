@@ -82,7 +82,6 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             subTournament.perNodeReceivers.add(new Pair<>(receiver, mod));
             return this;
         }
-
     }
 
     // should perhaps be named addPlayer

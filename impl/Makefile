@@ -9,8 +9,8 @@ parse: all
 	java -cp $(CP) TournamentParser ../src/simple_tournament
 
 
-quick: util/ReflectionHelper.class
-	@#java -cp $(CP) util.ReflectionHelper
+quick: TournamentParser.class
+	java -cp $(CP) TournamentParser ../src/simple_tournament
 
 
 # Compile and run tests
@@ -20,7 +20,7 @@ test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 ../test/AllTests.class: ../test/util/ReflectionHelperTest.class ../test/AllTests.java
 	javac -cp $(CP):$(TEST) ../test/AllTests.java
 
-../test/util/ReflectionHelperTest.class: util/reflectionhelper.class ../test/util/ReflectionHelperTest.java
+../test/util/ReflectionHelperTest.class: util/ReflectionHelper.class ../test/util/ReflectionHelperTest.java
 	javac -cp $(CP):$(TEST) ../test/util/ReflectionHelperTest.java
 
 
