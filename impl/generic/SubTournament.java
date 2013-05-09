@@ -55,6 +55,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             }
             return me();
         }
+
     }
     
     public Iterator<Node<ResultType>> iterator() {
