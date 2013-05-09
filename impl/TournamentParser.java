@@ -62,7 +62,7 @@ public class TournamentParser {
         Deque<Object> stack = new ArrayDeque<>();
 
         generic.SubTournament.Builder<?,Integer> builder;
-        List<Object> param;
+        int nrParam;
 
         ReflectionHelper rh = new ReflectionHelper();
 
@@ -119,10 +119,11 @@ public class TournamentParser {
         }
 
         public void visitParamMethod(Swag.Absyn.ParamMethod parammethod) {
+            nrParam = 0;
             if (parammethod.listexp_ != null) {parammethod.listexp_.accept(this);}
 
             try {
-                rh.call(builder, rh.toCamelCase(parammethod.ident_), pop(1, stack));
+                rh.call(builder, rh.toCamelCase(parammethod.ident_), pop(nrParam, stack));
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -137,11 +138,9 @@ public class TournamentParser {
                 System.exit(1);
             }
         }
-        public void visitListExp(Swag.Absyn.ListExp listexp)
-        {
-            while(listexp!= null)
-            {
-                /* Code For ListExp Goes Here */
+        public void visitListExp(Swag.Absyn.ListExp listexp) {
+            while(listexp!= null) {
+                nrParam++;
                 listexp.exp_.accept(this);
                 listexp = listexp.listexp_;
             }
