@@ -123,7 +123,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     private int numPlayersWithLevel(int level) {
         int ret = 0;
         for (Player p : players) {
-            if ((int)p.getAttribute("level")==level) {
+            if ((int)p.get("level")==level) {
                 ret++;
             }
         }

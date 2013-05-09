@@ -57,7 +57,7 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         return attributeIsSet("result");
     }
 
-    public Object getAttribute(String key) {
+    public Object get(String key) {
         return attributes.get(key);
     }
 
