@@ -13,26 +13,29 @@ public class TestMain
         //    Swag.Absyn.Prog p = BasicParser.parseTournamentFile(args[0]);
         //    System.out.println("Alright, managed to parse!");
         //p.accept(new generic.GenericVisitor());
-        Player<Integer> p1 = new Player<>("Niklas");
-        Player<Integer> p2 = new Player<>("Daniel");
-        Player<Integer> p3 = new Player<>("Daniel");
-        Player<Integer> p4 = new Player<>("Daniel");
-        Player<Integer> p5 = new Player<>("Daniel");
-        Player<Integer> p6 = new Player<>("Daniel");
-        Player<Integer> p7 = new Player<>("Daniel");
-        Player<Integer> p8 = new Player<>("Daniel");
+        Player<Integer> p1 = new Player<>("p1");
+        Player<Integer> p2 = new Player<>("p2");
+        Player<Integer> p3 = new Player<>("p3");
+        Player<Integer> p4 = new Player<>("p4");
+        Player<Integer> p5 = new Player<>("p5");
+        Player<Integer> p6 = new Player<>("p6");
+        Player<Integer> p7 = new Player<>("p7");
+        Player<Integer> p8 = new Player<>("p8");
         List<Observer> os = Arrays.<Observer>asList(new NodeObserver());
-        List<Player<Integer>> players = Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8);// new Play.PlayerParser().parse();
+        List<Player<Integer>> players = Arrays.asList(p1,p2,p3,p4,p5,p6,p7);//,p8);
+        p7.set("level", 1);
         Bracket.Builder<Integer> b = new Bracket.Builder<>();
-        b.groupby(2).playuntil(2).advance(1).setPlayers(players).setObservers(os);
+        b.groupBy(2).playUntil(2).advance(1).setPlayers(players).setObservers(os);
         Bracket<Integer> br = new Bracket<>(b);
         br.startBuild();
+        Iterator<Node<Integer>> it = br.iterator();
+        Node<Integer> n = it.next();
     }
 
     // quick hack.
     private static class NodeObserver implements Observer {
         public void update(Observable o, Object arg) {
-            System.out.println(o + ": " + arg);
+            System.out.println("Notification from " + o + ": " + arg);
         }
     }
 }

@@ -6,6 +6,7 @@ SWAGDIR = ../bnfc/Swag
 PLAYDIR = ../bnfc/Play
 
 all: Player TournamentParser.class BasicParser TestMain Node SubTournament Tournament Bracket BracketNode
+#TournamentParser.class
 
 parse: Player TournamentParser.class BasicParser TestMain Node SubTournament Tournament Bracket BracketNode
 	java -cp $(CP) TournamentParser ../src/simple_tournament

@@ -34,12 +34,12 @@ public class Player<ResultType extends Comparable<? super ResultType>>
     }
 
     @SuppressWarnings("unchecked")
-    public ResultType setResult(ResultType result) {
+        public ResultType setResult(ResultType result) {
         return (ResultType) attributes.put("result", result);
     }
 
     @SuppressWarnings("unchecked")
-    public ResultType getResult() {
+        public ResultType getResult() {
         Object result = attributes.get("result");
         if (result == null) {
             throw new IllegalStateException("No result is set for player " + name);
@@ -56,7 +56,7 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         return attributeIsSet("result");
     }
 
-    public Object getAttribute(String key) {
+    public Object get(String key) {
         return attributes.get(key);
     }
 
@@ -65,12 +65,23 @@ public class Player<ResultType extends Comparable<? super ResultType>>
     }
 
     public boolean attributeIsSet(String key) {
-        return attributes.containsKey(key);
+        return attributes.get(key) != null;
     }
 
     @SuppressWarnings("unchecked")
-    // Default ordering is highest score first.
-    public int compareTo(Player<ResultType> other) {
-        return ((ResultType) attributes.get("result")).compareTo((ResultType) other.attributes.get("result"));
+        // Default ordering is highest score first.
+        // null (no result attribute set) is infinitely small
+        public int compareTo(Player<ResultType> other) {
+        int tiebreaker = other.id - id;
+        boolean thisSet = resultIsSet();
+        boolean otherSet = other.resultIsSet();
+        if (!thisSet) {
+            return otherSet ? 1 : tiebreaker;
+        } else if (!otherSet) {
+            return -1;
+        } else {
+            int res = ((ResultType) getResult()).compareTo((ResultType) other.getResult());
+            return res != 0 ? -res : tiebreaker;
+        }
     }
 }

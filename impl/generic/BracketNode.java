@@ -40,6 +40,7 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         }
     }
 
+    @Override
     public void acceptPlayer(Player<ResultType> p) {
         super.acceptPlayer(p);
         p.resetResult();
@@ -51,7 +52,9 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         while (it.hasNext() && (p=it.next()).getId()!=playerId) {
         }
         if (p.getId() == playerId) {
+            it.remove(); // needed to update ordering of set
             p.setResult(result);
+            players.add(p);
         }
         if (allResultsSet()) {
             sendPlayersOff();
@@ -71,5 +74,9 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         super.addObserver(o);
         setChanged();
         notifyObservers(getId());
+    }
+
+    public boolean isFull() {
+        return players.size() == numPlayers;
     }
 }

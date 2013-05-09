@@ -113,6 +113,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         players.add(p);
         stdNotify();
     }
+    
     /*
     public void addPlayer(Player<ResultType> p) {
         players.add(p);
@@ -120,8 +121,15 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         }*/
 
     protected void sendPlayersOff() {
+        System.out.printf("node %d sending players off\n",getId());
+        for (Player<ResultType> p : players) {
+            System.out.printf("\tPlayer %d score %d\n", p.getId(), p.get("result"));
+        }
         for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
             for (Player<ResultType> p : pair.snd.apply(players)) {
+                if (pair.fst instanceof Node) {
+                    System.out.printf("sending player %d to node %d\n", p.getId(), ((Node<ResultType>)pair.fst).getId());
+                }
                 pair.fst.acceptPlayer(p);
             }
         }
@@ -134,5 +142,14 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     private void stdNotify() {
         setChanged();
         notifyObservers();
+    }
+
+    public Set<Player<ResultType>> getPlayers() {
+        return new TreeSet(players);
+    }
+
+    // debug
+    private void printMods() {
+        System.out.println(toReceivers);
     }
 }

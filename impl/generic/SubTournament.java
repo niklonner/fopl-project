@@ -55,7 +55,6 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             }
             return me();
         }
-
     }
     
     public Iterator<Node<ResultType>> iterator() {
@@ -64,4 +63,6 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
 
     public abstract void startBuild();
 
+    protected abstract void dummyRun();
+    
 }
