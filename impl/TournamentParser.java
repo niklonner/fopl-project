@@ -26,6 +26,7 @@ public class TournamentParser {
         if(parse_tree != null) {
             Worker visitor = new Worker();
             parse_tree.accept(visitor);
+            visitor.subTournaments.get(0).startBuild();
         }
     }
 
@@ -58,6 +59,8 @@ public class TournamentParser {
 
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
+
+        List<generic.SubTournament<?>> subTournaments = new ArrayList<>();
 
         generic.SubTournament.Builder<?,Integer> builder;
         int nrParam;
@@ -97,6 +100,8 @@ public class TournamentParser {
             }
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
+            
+            subTournaments.add(builder.getSubTournament());
         }
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)
         {
@@ -119,7 +124,6 @@ public class TournamentParser {
         public void visitParamMethod(Swag.Absyn.ParamMethod parammethod) {
             nrParam = 0;
             if (parammethod.listexp_ != null) {parammethod.listexp_.accept(this);}
-
             try {
                 rh.call(builder, rh.toCamelCase(parammethod.ident_), pop(nrParam, stack));
             } catch (NoSuchMethodException e) {
@@ -312,6 +316,7 @@ public class TournamentParser {
 
         public void visitIdent(String i) {
             //TODO: Make variables work. (Possibly using a map.)
+            stack.push(i);
         }
         public void visitInteger(Integer i) {
             stack.push(i);
@@ -321,6 +326,7 @@ public class TournamentParser {
         }
         public void visitChar(Character c) {
             stack.push(c);
+
         }
         public void visitString(String s) {
             stack.push(s);
