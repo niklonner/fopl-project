@@ -51,7 +51,7 @@ BracketNode: generic/BracketNode.java
 util:
 	javac -cp $(CP) util/*.java
 
-BasicParser: BasicParser/BasicParser.java
+BasicParser: 
 	sed 's/<<package>>/Swag/g' BasicParser/BasicParser.java > $(SWAGDIR)/Swag/BasicParser.java
 	sed 's/<<package>>/Play/g' BasicParser/BasicParser.java > $(PLAYDIR)/Play/BasicParser.java
 	javac -cp $(CP) $(SWAGDIR)/Swag/BasicParser.java
