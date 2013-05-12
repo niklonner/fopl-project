@@ -1,12 +1,12 @@
-package Swag;
+package <<package>>;
 import java_cup.runtime.*;
-import Swag.*;
-import Swag.Absyn.*;
+import <<package>>.*;
+import <<package>>.Absyn.*;
 import java.io.*;
 
 public class BasicParser {
 
-    public static Swag.Absyn.Prog parseTournamentFile(String fileName) {
+    public static <<package>>.Absyn.Prog parseTournamentFile(String fileName) {
         Yylex l = null;
         parser p;
         try {
@@ -18,7 +18,7 @@ public class BasicParser {
         }
         p = new parser(l);
         try {
-            Swag.Absyn.Prog parse_tree = p.pProg();
+            <<package>>.Absyn.Prog parse_tree = p.pProg();
             System.out.println();
             System.out.println("Parse Succesful!");
             System.out.println();
