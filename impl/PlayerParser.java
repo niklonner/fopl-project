@@ -26,8 +26,10 @@ public class PlayerParser {
         Worker worker = new Worker();
         if(parse_tree != null) {
             parse_tree.accept(worker);
+            return worker.getPlayers();
+        } else {
+            return null;
         }
-        return worker.getPlayers();
     }
 
     private static class Worker implements Visitor {
