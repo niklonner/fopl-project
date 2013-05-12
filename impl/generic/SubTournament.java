@@ -1,6 +1,7 @@
 package generic;
 
 import java.util.*;
+import util.*;
 
 public abstract class SubTournament<ResultType extends Comparable<? super ResultType>>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {
@@ -30,10 +31,18 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
         for (Observer o : observers) {
             addObserver(o);
         }
+        if (builder.playerSource != null) {
+            PlayerParser pp = new PlayerParser();
+            List<Player> players = (List<Player>) pp.parse(builder.playerSource);
+            for (Player p : players) {
+                acceptPlayer((Player<ResultType>) p);
+            }
+        }
     }
 
     public static abstract class Builder<T extends Builder<T,ResultType>, ResultType extends Comparable<? super ResultType>> {
         protected SubTournament<ResultType> subTournament;
+        protected String playerSource;
 
         public Builder() {
             subTournament = createSubTournament();
@@ -41,6 +50,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
 
         protected abstract SubTournament<ResultType> createSubTournament();
         protected abstract T me();
+        public abstract SubTournament<ResultType> getSubTournament();
 
         public T setPlayers(List<Player<ResultType>> players) {
             if (players != null) {
@@ -55,6 +65,12 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             }
             return me();
         }
+        
+        public T playerSource(String source) {
+            playerSource = source;
+            return me();
+        }
+
     }
     
     public Iterator<Node<ResultType>> iterator() {

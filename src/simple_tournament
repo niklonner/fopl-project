@@ -1,7 +1,9 @@
 "Simple Name" : bracket {
-//    group_by: 2 + 5;
+    player_source: players;
+    group_by: 2;
 //    advance: 5 - 2;
 //    advance: 5 / 2;
     advance: 5 % 2;
-    advance: 5 ^ 2;
+//    advance: 5 ^ 2;
+    play_until: 1;
 }

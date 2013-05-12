@@ -4,13 +4,13 @@ PLAYDIR = ../bnfc/Play
 CP = .:$(LIB):$(SWAGDIR):$(PLAYDIR)
 TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
 
-all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player util/ReflectionHelper.class PlayerParser.class
+all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player util/ReflectionHelper.class util/PlayerParser.class
 
 parse: all
 	java -cp $(CP) TournamentParser ../src/simple_tournament
 
 parsePlayers: all
-	java -cp $(CP) PlayerParser ../syntax/players
+	java -cp $(CP) util/PlayerParser ../syntax/players
 
 
 quick: TournamentParser.class
@@ -69,8 +69,8 @@ TournamentParser.class: TournamentParser.java
 util/ReflectionHelper.class: util/ReflectionHelper.java
 	javac -cp $(CP) util/ReflectionHelper.java
 
-PlayerParser.class: PlayerParser.java
-	javac -cp $(CP) PlayerParser.java
+util/PlayerParser.class: util/PlayerParser.java
+	javac -cp $(CP) util/PlayerParser.java
 
 clean:
 	rm $(SWAGDIR)/Swag/BasicParser.*

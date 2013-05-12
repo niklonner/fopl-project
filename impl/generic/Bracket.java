@@ -56,6 +56,10 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
+        public SubTournament<ResultType> getSubTournament() {
+            return new Bracket<>(this);
+        }
+
         public Builder<ResultType> sendTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.receivers.add(new Pair<>(receiver,mod));
             return this;
@@ -89,6 +93,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             subTournament.perNodeReceivers.add(new Pair<>(receiver, mod));
             return this;
         }
+        
     }
 
     // should perhaps be named addPlayer
@@ -143,8 +148,6 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                 prevLayer.nodes.size()*advancing;
             int occupiedNodes = prevLayer == null ? 0 :
                 (int)Math.ceil((double)playerCounter/groupBy);
-            System.out.println("occupiedNodes " + occupiedNodes);
-            System.out.println(playerCounter);
             for (int i=0;i<occupiedNodes;i++) {
                 node = it.next();
                 System.out.println(node.getId());
