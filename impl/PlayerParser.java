@@ -23,8 +23,8 @@ public class PlayerParser {
 
     public List<Player> parse(String path) {
         Play.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
+        Worker worker = new Worker();
         if(parse_tree != null) {
-            Worker worker = new Worker();
             parse_tree.accept(worker);
         }
         return worker.getPlayers();

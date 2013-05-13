@@ -35,4 +35,5 @@ Efol          . Exp3 ::= Exp3 "." Ident;
 Eint          . Exp4 ::= Integer;
 EDouble       . Exp4 ::= Double;
 EVar          . Exp4 ::= Ident;
+EString       . Exp4 ::= String;
 coercions Exp 4;

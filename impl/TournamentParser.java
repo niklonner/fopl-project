@@ -309,6 +309,9 @@ public class TournamentParser {
         public void visitEVar(Swag.Absyn.EVar evar) {
             visitIdent(evar.ident_);
         }
+        public void visitEString(Swag.Absyn.EString estring) {
+            visitString(estring.string_);
+        }
 
         public void visitIdent(String i) {
             //TODO: Make variables work. (Possibly using a map.)
