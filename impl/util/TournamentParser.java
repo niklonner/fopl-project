@@ -1,3 +1,4 @@
+package util;
 
 import Swag.*;
 import Swag.Absyn.*;
@@ -21,41 +22,32 @@ public class TournamentParser {
      * For simple command-line testing
      */
     public static void main(String args[]) throws Exception {
-        System.out.println("\nRunning\n");
-        Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(args[0]);
+        (new TournamentParser()).parse(args[0]);
+    }
+
+    public void parse(String path) throws ContextException {
+        try {
+            Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
+        Worker visitor = new Worker();
         if(parse_tree != null) {
-            Worker visitor = new Worker();
+            parse_tree.accept(visitor);
+            visitor.subTournaments.get(0).startBuild();
+        }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public void parseString(String sourceCode) throws ContextException {
+        Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentString(sourceCode);
+        Worker visitor = new Worker();
+        if(parse_tree != null) {
             parse_tree.accept(visitor);
             visitor.subTournaments.get(0).startBuild();
         }
     }
 
-
-    //public void parse(String path) {
-        //Yylex l = null;
-        //parser p;
-
-        //try {
-            //l = new Yylex(new FileReader(path));
-        //}
-        //catch(FileNotFoundException e) {
-            //System.err.println("Error: File not found: " + path);
-            //System.exit(1);
-        //}
-
-        //p = new parser(l);
-
-        //try {
-            //Play.Absyn.Prog parse_tree = p.pProg();
-
-            //Parser parser = new Parser();
-            //parse_tree.accept(parser);
-        //} catch(Throwable e) {
-            //System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
-            //System.err.println("     " + e.getMessage());
-            //System.exit(1);
-        //}
-    //}
 
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
@@ -100,7 +92,7 @@ public class TournamentParser {
             }
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
-            
+
             subTournaments.add(builder.getSubTournament());
         }
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)

@@ -4,21 +4,27 @@ import <<package>>.*;
 import <<package>>.Absyn.*;
 import java.io.*;
 
+import util.ContextException;
+
 public class BasicParser {
 
-    public static <<package>>.Absyn.Prog parseTournamentFile(String fileName) {
+    public static <<package>>.Absyn.Prog parseTournamentFile(String path) throws ContextException, FileNotFoundException {
+        return parse(new FileReader(path));
+    }
+
+    public static <<package>>.Absyn.Prog parseTournamentString(String sourceCode) throws ContextException {
+        return parse(new StringReader(sourceCode));
+    }
+
+
+    private static <<package>>.Absyn.Prog parse(Reader reader) throws ContextException {
         Yylex l = null;
         parser p;
-        try {
-            l = new Yylex(new FileReader(fileName));
-        }
-        catch(FileNotFoundException e) {
-            System.err.println("Error: File not found: " + fileName);
-            System.exit(1);
-        }
+        l = new Yylex(reader);
         p = new parser(l);
+        <<package>>.Absyn.Prog parse_tree = null;
         try {
-            <<package>>.Absyn.Prog parse_tree = p.pProg();
+            parse_tree = p.pProg();
             System.out.println();
             System.out.println("Parse Succesful!");
             System.out.println();
@@ -29,16 +35,13 @@ public class BasicParser {
             System.out.println("[Linearized Tree]");
             System.out.println();
             System.out.println(PrettyPrinter.print(parse_tree));
-            return parse_tree;
+        } catch(Throwable e) { // sorry, but pProgram is this unspecific about its exceptions
+            ContextException exc = new ContextException(e);
+            exc.setLine(l.line_num());
+            exc.setContext(l.buff());
+            throw exc;
         }
-        catch(Throwable e) { // sorry, but pProgram is this unspecific about its exceptions
-            System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
-            System.err.println("     " + e.getMessage());
-            System.out.println("");
-            e.printStackTrace();
-            System.exit(1);
-        }
-        return null; // to satisfy compiler
+        return parse_tree;
     }
 }
 
