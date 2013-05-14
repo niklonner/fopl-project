@@ -18,3 +18,4 @@ bnfc/Play/Play/Yylex
 !bnfc/Play/Play.cf
 
 !lib/JLex/*.class
+lib/Batik/samples

@@ -1,8 +1,11 @@
-LIB = ../lib/:../lib/Cup/java-cup-11a.jar:../lib/Ayatana/jayatana-1.2.4.jar
+LIB = ../lib/:../lib/Cup/java-cup-11a.jar:../lib/Ayatana/jayatana-1.2.4.jar:../lib/Batik/batik.jar
 SWAGDIR = ../bnfc/Swag
 PLAYDIR = ../bnfc/Play
 CP = .:$(LIB):$(SWAGDIR):$(PLAYDIR)
 TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
+
+main: Main.class
+	java -cp $(CP) Main
 
 all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode util/TournamentParser.class Player util/ReflectionHelper.class util/PlayerParser.class viewer/Viewer.class Main.class
 
@@ -13,8 +16,11 @@ parsePlayers: all
 	java -cp $(CP) util/PlayerParser ../syntax/players
 
 
-quick: Main.class
-	java -cp $(CP) Main
+quick:
+	javac -cp $(CP) ViewGeneratedSVGDemo.java
+	java -cp $(CP) ViewGeneratedSVGDemo
+
+
 
 # Compile and run tests
 test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class

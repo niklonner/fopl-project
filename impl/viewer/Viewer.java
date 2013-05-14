@@ -4,11 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import org.java.ayatana.ApplicationMenu;
+import java.io.*;
 
 import util.TournamentParser;
 import util.ContextException;
 
-public class Viewer extends JFrame implements ActionListener {
+public class Viewer extends JFrame implements ActionListener, DisplayPanel.DisplayListener {
     DisplayPanel display;
     CodeArea text;
 
@@ -40,9 +41,31 @@ public class Viewer extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Viewer");
         menuBar.add(menu);
-        JMenuItem menuItem = new JMenuItem("Parse");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+
+        JMenuItem parseMenuItem = new JMenuItem("Parse");
+        parseMenuItem.addActionListener(this);
+        menu.add(parseMenuItem);
+
+        JMenuItem drawMenuItem = new JMenuItem("Draw");
+        drawMenuItem.addActionListener(this);
+        menu.add(drawMenuItem);
+
+        JMenuItem loadMenuItem = new JMenuItem("Load");
+        loadMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                JFileChooser fc = new JFileChooser(".");
+                int choice = fc.showOpenDialog(display);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File f = fc.getSelectedFile();
+                    try {
+                        display.loadSvg(f.toURL().toString());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        menu.add(loadMenuItem);
 
         setJMenuBar(menuBar);
 
@@ -50,6 +73,7 @@ public class Viewer extends JFrame implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(text);
 
         display = new DisplayPanel();
+        display.setDisplayListener(this);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 false, display, scrollPane);
@@ -64,15 +88,33 @@ public class Viewer extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String s = text.getText();
-        TournamentParser tp = new TournamentParser();
-        try {
-            tp.parseString(s);
-        } catch (ContextException exception) {
-            text.setError(exception.getLine());
 
-            System.err.println("Error near: " + exception.getContext());
-            exception.printStackTrace();
+        switch(e.getActionCommand()) {
+            case "Parse":
+                String s = text.getText();
+                TournamentParser tp = new TournamentParser();
+                try {
+                    tp.parseString(s);
+                    // display.drawTournament(tournament);
+                } catch (ContextException exception) {
+                    text.setError(exception.getLine());
+
+                    System.err.println("Error near: " + exception.getContext());
+                    exception.printStackTrace();
+                }
+                break;
+            case "Load":
+                break;
+            case "Draw":
+                display.drawTournament();
+                break;
+            default:
+                System.out.println("Selected: " + e.getActionCommand());
+                break;
         }
+    }
+
+    @Override
+    public void onBuildComplete() {
     }
 }
