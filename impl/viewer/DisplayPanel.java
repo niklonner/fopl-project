@@ -1,5 +1,8 @@
 package viewer;
 
+import java.util.List;
+import generic.SubTournament;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -41,7 +44,7 @@ public class DisplayPanel extends JPanel {
         this.dl = dl;
     }
 
-    public void drawTournament() {
+    public void drawTournament(List<SubTournament<?>> subts) {
         // Create an SVG document.
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
@@ -51,7 +54,7 @@ public class DisplayPanel extends JPanel {
         SVGGraphics2D g = new SVGGraphics2D(doc);
 
         //Draw tournament
-        draw(g, null);
+        draw(g, subts);
 
         // Populate the document root with the generated SVG content.
         Element root = doc.getDocumentElement();
@@ -70,16 +73,23 @@ public class DisplayPanel extends JPanel {
         dl.onBuildComplete();
     }
 
-    private void draw(SVGGraphics2D g, Object tournament) {
-        Shape circle = new Ellipse2D.Double(0, 0, 50, 50);
-        g.setPaint(Color.red);
-        g.fill(circle);
-        g.translate(60, 0);
-        g.setPaint(Color.green);
-        g.fill(circle);
-        g.translate(60, 0);
-        g.setPaint(Color.blue);
-        g.fill(circle);
+    private void draw(SVGGraphics2D g, List<SubTournament<?>> subts) {
+        Shape box = new Rectangle2D.Double(0,0,50,50);
+        for(SubTournament subt : subts) {
+            g.setPaint(Color.white);
+            g.fill(box);
+            g.translate(60, 0);
+        }
+
+        //Shape circle = new Ellipse2D.Double(0, 0, 50, 50);
+        //g.setPaint(Color.red);
+        //g.fill(circle);
+        //g.translate(60, 0);
+        //g.setPaint(Color.green);
+        //g.fill(circle);
+        //g.translate(60, 0);
+        //g.setPaint(Color.blue);
+        //g.fill(circle);
     }
 
     private JSVGCanvas makeCanvas() {

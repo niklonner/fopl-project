@@ -94,8 +94,7 @@ public class Viewer extends JFrame implements ActionListener, DisplayPanel.Displ
                 String s = text.getText();
                 TournamentParser tp = new TournamentParser();
                 try {
-                    tp.parseString(s);
-                    // display.drawTournament(tournament);
+                     display.drawTournament(tp.parseString(s));
                 } catch (ContextException exception) {
                     text.setError(exception.getLine());
 
@@ -104,9 +103,6 @@ public class Viewer extends JFrame implements ActionListener, DisplayPanel.Displ
                 }
                 break;
             case "Load":
-                break;
-            case "Draw":
-                display.drawTournament();
                 break;
             default:
                 System.out.println("Selected: " + e.getActionCommand());

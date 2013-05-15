@@ -28,24 +28,26 @@ public class TournamentParser {
     public void parse(String path) throws ContextException {
         try {
             Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
-        Worker visitor = new Worker();
-        if(parse_tree != null) {
-            parse_tree.accept(visitor);
-            visitor.subTournaments.get(0).startBuild();
-        }
+            Worker visitor = new Worker();
+            if(parse_tree != null) {
+                parse_tree.accept(visitor);
+                visitor.subTournaments.get(0).startBuild();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public void parseString(String sourceCode) throws ContextException {
+    public List<generic.SubTournament<?>> parseString(String sourceCode) throws ContextException {
+        List<generic.SubTournament<?>> subt;
         Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentString(sourceCode);
         Worker visitor = new Worker();
         if(parse_tree != null) {
             parse_tree.accept(visitor);
-            visitor.subTournaments.get(0).startBuild();
+            /*subt =*/ visitor.subTournaments.get(0).startBuild();
         }
+        return visitor.subTournaments;
     }
 
 
