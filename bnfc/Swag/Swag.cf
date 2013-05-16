@@ -17,7 +17,7 @@ separator nonempty Exp ",";
 Method      . Stmt ::= Ident;
 
 Eunion        . Exp  ::= "(" [Exp] ")";
-separator Exp ",";
+
 Eeq           . Exp  ::= Exp "==" Exp1;
 Elt           . Exp  ::= Exp "<" Exp1;
 Elteq         . Exp  ::= Exp "<=" Exp1;
@@ -32,8 +32,13 @@ Emul          . Exp1 ::= Exp1 "*" Exp2;
 Emod          . Exp1 ::= Exp1 "%" Exp2;
 Epow          . Exp2 ::= Exp2 "^" Exp3;
 Efol          . Exp3 ::= Exp3 "." Ident;
-Eint          . Exp4 ::= Integer;
-EDouble       . Exp4 ::= Double;
-EVar          . Exp4 ::= Ident;
-EString       . Exp4 ::= String;
+ETop          . Exp4 ::= "top" Integer Exp4;
+EBottom       . Exp4 ::= "bottom" Integer Exp4;
+Eint          . Exp5 ::= Integer;
+EDouble       . Exp5 ::= Double;
+EVar          . Exp5 ::= Ident;
+EString       . Exp5 ::= String;
+--EParamMethod  . Exp ::= "(" Ident ":" [Exp] ")";
+--EMethod       . Exp ::= "(" Ident ")";
+
 coercions Exp 4;
