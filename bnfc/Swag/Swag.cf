@@ -32,12 +32,12 @@ Emul          . Exp1 ::= Exp1 "*" Exp2;
 Emod          . Exp1 ::= Exp1 "%" Exp2;
 Epow          . Exp2 ::= Exp2 "^" Exp3;
 Efol          . Exp3 ::= Exp3 "." Ident;
-ETop          . Exp4 ::= "top" Integer Exp4;
-EBottom       . Exp4 ::= "bottom" Integer Exp4;
+--ETop          . Exp4 ::= "top" Integer Exp4;
+--EBottom       . Exp4 ::= "bottom" Integer Exp4;
 Eint          . Exp5 ::= Integer;
 EDouble       . Exp5 ::= Double;
 EVar          . Exp5 ::= Ident;
-EString       . Exp5 ::= String;
+--EString       . Exp5 ::= String;
 --EParamMethod  . Exp ::= "(" Ident ":" [Exp] ")";
 --EMethod       . Exp ::= "(" Ident ")";
 
