@@ -41,4 +41,4 @@ EVar          . Exp5 ::= Ident;
 --EParamMethod  . Exp ::= "(" Ident ":" [Exp] ")";
 --EMethod       . Exp ::= "(" Ident ")";
 
-coercions Exp 4;
+coercions Exp 5;
