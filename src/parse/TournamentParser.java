@@ -24,7 +24,13 @@ public class TournamentParser {
      * For simple command-line testing
      */
     public static void main(String args[]) throws Exception {
-        (new TournamentParser()).parse(args[0]);
+        System.out.println("\nRunning\n");
+        Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(args[0]);
+        if(parse_tree != null) {
+            Worker visitor = new Worker();
+            parse_tree.accept(visitor);
+            visitor.subTournaments.get(0).startBuild();
+        }
     }
 
     public void parse(String path) throws ContextException {
@@ -52,6 +58,32 @@ public class TournamentParser {
         return visitor.subTournaments;
     }
 
+
+    //public void parse(String path) {
+    //Yylex l = null;
+    //parser p;
+
+    //try {
+    //l = new Yylex(new FileReader(path));
+    //}
+    //catch(FileNotFoundException e) {
+    //System.err.println("Error: File not found: " + path);
+    //System.exit(1);
+    //}
+
+    //p = new parser(l);
+
+    //try {
+    //Play.Absyn.Prog parse_tree = p.pProg();
+
+    //Parser parser = new Parser();
+    //parse_tree.accept(parser);
+    //} catch(Throwable e) {
+    //System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+    //System.err.println("     " + e.getMessage());
+    //System.exit(1);
+    //}
+    //}
 
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
@@ -86,13 +118,13 @@ public class TournamentParser {
 
 
             switch (subtournament.ident_) {
-                case "bracket":
-                    builder = new Bracket.Builder<Integer>();
-                    break;
-                default:
-                    System.err.println("Unrecognizable subtournament type \"" +
-                            subtournament.ident_ + "\".");
-                    System.exit(1);
+            case "bracket":
+                builder = new Bracket.Builder<Integer>();
+                break;
+            default:
+                System.err.println("Unrecognizable subtournament type \"" +
+                                   subtournament.ident_ + "\".");
+                System.exit(1);
             }
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
@@ -102,11 +134,11 @@ public class TournamentParser {
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)
         {
             while(liststmt!= null)
-            {
-                /* Code For ListStmt Goes Here */
-                liststmt.stmt_.accept(this);
-                liststmt = liststmt.liststmt_;
-            }
+                {
+                    /* Code For ListStmt Goes Here */
+                    liststmt.stmt_.accept(this);
+                    liststmt = liststmt.liststmt_;
+                }
         }
         public void visitStmt(Swag.Absyn.Stmt stmt) {} //abstract class
         public void visitAssignment(Swag.Absyn.Assignment assignment)
@@ -300,6 +332,38 @@ public class TournamentParser {
             efol.exp_.accept(this);
             visitIdent(efol.ident_);
         }
+
+        public void visitETop(Swag.Absyn.ETop etop)
+        {
+            visitInteger(etop.integer_);
+            etop.exp_.accept(this);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            if (x instanceof Integer) {
+                SetModifier<Player<?>> sm = null;
+                boolean push = false;
+                if (y instanceof SetModifier<?>) {
+                    sm = new TopMod<Player<?>>((int)x,(SetModifier<Player<?>>)y);
+                    push = true;
+                } else if (y instanceof String && ((String)y).equalsIgnoreCase("all")) {
+                    sm = new IdentityMod<Player<?>>();
+                    push = true;
+                }
+                if (push) {
+                    stack.push(sm);
+                }
+            }
+        }
+        public void visitEBottom(Swag.Absyn.EBottom ebottom)
+        {
+            /* Code For EBottom Goes Here */
+
+            visitInteger(ebottom.integer_);
+            ebottom.exp_.accept(this);
+        }
+        
         public void visitEint(Swag.Absyn.Eint eint) {
             visitInteger(eint.integer_);
         }
