@@ -4,7 +4,7 @@ PLAYDIR = ../bnfc/Play
 CP = .:$(LIB):$(SWAGDIR):$(PLAYDIR)
 TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
 
-all:  BasicParser TestMain Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player util/ReflectionHelper.class util/PlayerParser.class
+all:  BasicParser TestMain Tournament Node SubTournament Tournament Bracket BracketNode TournamentParser.class Player util/ReflectionHelper.class util/PlayerParser.class
 
 parse: all
 	java -cp $(CP) TournamentParser ../src/simple_tournament

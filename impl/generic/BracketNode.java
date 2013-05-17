@@ -8,6 +8,7 @@ import java.util.*;
 
 public class BracketNode<ResultType extends Comparable<? super ResultType>> extends Node<ResultType> {
     private int numPlayers;
+    private int advancing;
 
     // for use by builder only
     private BracketNode() {
@@ -17,6 +18,7 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
     public BracketNode(Builder<ResultType> builder) {
         super(builder);
         this.numPlayers = builder.node.numPlayers;
+        this.advancing = builder.node.advancing;
     }
 
     // TODO: Add hook to modifiy players before sending them off
@@ -38,6 +40,12 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
             this.node.numPlayers = numPlayers;
             return this;
         }
+
+        public Builder<ResultType> setAdvancing(int advancing) {
+            this.node.advancing = advancing;
+            return this;
+        }
+
     }
 
     @Override
@@ -58,6 +66,16 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         }
         if (allResultsSet()) {
             sendPlayersOff();
+        }
+    }
+
+    public void sendOffHook(Player<ResultType> player) {
+        if (rank(player) <= advancing) {
+            if (player.attributeIsSet("level")) {
+                player.set("level",((int)player.get("level"))+1);
+            } else {
+                player.set("level",1);
+            }
         }
     }
 

@@ -71,6 +71,10 @@ public class ReflectionHelper {
         for(int i = 0; i < paramtypes.length; i++) {
             paramtypes[i] = makePrimitive(param.get(i).getClass());
         }
+        if (name.equals("sendTo")) {
+            System.out.println("hej");
+            paramtypes[1] = SetModifier.class;
+        }
 
         try {
             Method method = type.getMethod(name, paramtypes);

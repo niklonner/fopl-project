@@ -8,10 +8,13 @@ import util.*;
 import java_cup.runtime.*;
 import java.io.*;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Collections;
 
 import java.lang.reflect.*;
 
@@ -26,7 +29,9 @@ public class TournamentParser {
         if(parse_tree != null) {
             Worker visitor = new Worker();
             parse_tree.accept(visitor);
-            visitor.subTournaments.get(0).startBuild();
+            for (int i=1;i<args.length;i++) {
+                visitor.superTournament.findSubTournament(args[i]).startBuild();
+            }
         }
     }
 
@@ -60,8 +65,11 @@ public class TournamentParser {
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
 
-        List<generic.SubTournament<?>> subTournaments = new ArrayList<>();
+        Map<String,generic.SubTournament<?>> subTournaments = new TreeMap<>();
 
+        Tournament<Integer> superTournament = new Tournament<>();
+            
+        
         generic.SubTournament.Builder<?,Integer> builder;
         int nrParam;
 
@@ -100,8 +108,9 @@ public class TournamentParser {
             }
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
-            
-            subTournaments.add(builder.getSubTournament());
+
+            builder.setTournament(superTournament);
+            superTournament.addSubTournament(subtournament.string_,builder.getSubTournament());
         }
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)
         {
@@ -375,6 +384,7 @@ public class TournamentParser {
             for(int i = 0; i < number; i++) {
                 list.add(queue.remove());
             }
+            Collections.reverse(list);
             return list;
         }
     }
