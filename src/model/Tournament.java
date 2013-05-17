@@ -4,11 +4,11 @@ import java.util.*;
 import sets.*;
 import parse.*;
 
-public class Tournament implements Iterable<SubTournament<?>> {
-    private List<SubTournament<?>> subtournaments;
+public class Tournament<ResultType extends Comparable<? super ResultType>> implements Iterable<SubTournament<ResultType>> {
+    public  Map<String,SubTournament<ResultType>> subTournaments;
 
     public Tournament() {
-        subtournaments = new ArrayList<>();
+        subTournaments = new TreeMap<>();
     }
 
     // returns true if add is ok (name doesnt already exist)
@@ -21,7 +21,16 @@ public class Tournament implements Iterable<SubTournament<?>> {
     // 	}
     // }
 
-    public Iterator<SubTournament<?>> iterator() {
-        return subtournaments.iterator();
+    public SubTournament<ResultType> findSubTournament(String str) {
+        return subTournaments.get(str);
+    }
+
+    public void addSubTournament(String str, SubTournament<ResultType> subTournament) {
+        subTournaments.put(str, subTournament);
+    }
+    
+    public Iterator<SubTournament<ResultType>> iterator() {
+        //        return subtournaments.iterator();
+        return null;
     }
 }

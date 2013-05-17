@@ -19,9 +19,10 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     private int groupBy;
     private int advancing;
     private int playUntil;
-    private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
+    private boolean resetLevels;
+    private List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
     // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
-    private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
+    private List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
 
     private List<BracketNodeLayer> nodeLayers = new ArrayList<>();
     private FinalLayerNode finalLayer;
@@ -39,6 +40,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         advancing = builder.subTournament.advancing;
         receivers = builder.subTournament.receivers;
         perNodeReceivers = builder.subTournament.perNodeReceivers;
+        resetLevels = builder.subTournament.resetLevels;
     }
 
     public static class Builder<ResultType extends Comparable<? super ResultType>>
@@ -62,7 +64,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return new Bracket<>(this);
         }
 
-        public Builder<ResultType> sendTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+        public Builder<ResultType> sendTo(String receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.receivers.add(new Pair<>(receiver,mod));
             return this;
         }
@@ -87,20 +89,20 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
-        public Builder<ResultType> sendLosersTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
-            return sendToPerNode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, mod));
+        public Builder<ResultType> sendLosersTo(String receiver) {
+            return sendToPerNode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, new IdentityMod<Player<ResultType>>()));
         }
         
-        public Builder<ResultType> sendToPerNode(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
+        public Builder<ResultType> sendToPerNode(String receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.perNodeReceivers.add(new Pair<>(receiver, mod));
             return this;
         }
-        
-    }
 
-    // should perhaps be named addPlayer
-    public void acceptPlayer(Player<ResultType> p) {
-        players.add(p);
+        public Builder<ResultType> resetLevels() {
+            subTournament.resetLevels = true;
+            return this;
+        }
+        
     }
 
     // don't call until all (dummy) players have been added
@@ -116,8 +118,8 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         int remaining = numNodes*advancing;
         // build remaining levels
         int level = 1;
-        while (remaining > playUntil) {
-            numPlayers = numPlayersWithLevel(level) + remaining;
+        numPlayers = numPlayersWithLevel(level) + remaining;
+        while (numPlayers > playUntil) {
             numNodes = numPlayers/groupBy;
             BracketNodeLayer layer = new BracketNodeLayer(numNodes);
             previousLayer.connectWith(layer);
@@ -125,14 +127,14 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             previousLayer = layer;
             remaining = numNodes*advancing;
             level++;
+            numPlayers = numPlayersWithLevel(level) + remaining;
         }
         finalLayer = new FinalLayerNode();
-        for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> p : receivers) {
-            finalLayer.addReceiver(p.fst, p.snd);
+        for (Pair<String, SetModifier<Player<ResultType>>> p : receivers) {
+            finalLayer.addReceiver(tournament.findSubTournament(p.fst), p.snd);
         }
         previousLayer.connectWith(finalLayer);
         built = true;
-        System.out.println(nodes.size() + " nodes");
         dummyRun();
     }
 
@@ -156,7 +158,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             }
             for (Player<ResultType> p : players) {
                 if ((!p.attributeIsSet("level") && level==0) || (p.attributeIsSet("level") && (int)p.get("level") == level)) {
-                    System.out.println("add player " + p.getId());
+                    System.out.println("add player " + p.getId() + " at level " + level);
                     if (playerCounter % groupBy == 0) {
                         node = it.next();
                     }
@@ -191,6 +193,12 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         return ret;
     }
 
+    public void receiveHook(Player<ResultType> p) {
+        if (resetLevels) {
+            p.set("level",0);
+        }
+    }
+    
     // node for remaining players ("winners") when bracket is done
     // this enables ranking of all "winners", if more than one
     private class FinalLayerNode extends Node<ResultType> {
@@ -200,6 +208,10 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             if (players.size() == playUntil) {
                 sendPlayersOff();
             }
+        }
+
+        public void sendOffHook(Player<ResultType> p) {
+            
         }
         
         public void addResult(Integer i, ResultType r) {
@@ -217,6 +229,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                 BracketNode.Builder<ResultType> builder = new BracketNode.Builder<>();
                 builder.setNumPlayers(groupBy);
                 builder.setObservers(observers);
+                builder.setAdvancing(advancing);
                 // set comparator
                 BracketNode<ResultType> newNode = new BracketNode<ResultType>(builder);
                 nodes.add(newNode);
@@ -235,8 +248,8 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                 for (int j=0;j<treeWidth && i+j<nodes.size();j++) {
                     BracketNode<ResultType> n1 = nodes.get(i+j);
                     n1.addReceiver(nextNode,advancingMod);
-                    for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> p : perNodeReceivers) {
-                        n1.addReceiver(p.fst,p.snd);
+                    for (Pair<String, SetModifier<Player<ResultType>>> p : perNodeReceivers) {
+                        n1.addReceiver(tournament.findSubTournament(p.fst),p.snd);
                     }
                 }
             }
@@ -245,6 +258,9 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         void connectWith(FinalLayerNode fln) {
             for (BracketNode<ResultType> bn : nodes) {
                 bn.addReceiver(fln, advancingMod);
+                for (Pair<String, SetModifier<Player<ResultType>>> p : perNodeReceivers) {
+                    bn.addReceiver(tournament.findSubTournament(p.fst),p.snd);
+                }
             }
         }
     }

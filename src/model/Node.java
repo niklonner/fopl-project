@@ -131,10 +131,26 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
             for (Player<ResultType> p : pair.snd.apply(players)) {
                 if (pair.fst instanceof Node) {
                     System.out.printf("sending player %d to node %d\n", p.getId(), ((Node<ResultType>)pair.fst).getId());
+                } else if (pair.fst instanceof SubTournament) {
+                    System.out.printf("sending player %d to subtournament %d\n", p.getId(), ((SubTournament<ResultType>)pair.fst).getId());
                 }
+                sendOffHook(p);
                 pair.fst.acceptPlayer(p);
             }
         }
+    }
+
+    public abstract void sendOffHook(Player<ResultType> p);
+
+    public int rank(Player<ResultType> player) {
+        int i=0;
+        for (Player<ResultType> p : players) {
+            ++i;
+            if (p.equals(player)) {
+                return i;
+            }
+        }
+        return -1;
     }
     
     public String toString() {

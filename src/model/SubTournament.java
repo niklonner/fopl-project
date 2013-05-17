@@ -13,6 +13,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     protected List<Player<ResultType>> players = new ArrayList<>();
     protected List<Node<ResultType>> nodes = new ArrayList<>();
     protected List<Observer> observers = new ArrayList<>();
+    protected Tournament tournament;
 
     // only for use by subclasses
     protected SubTournament() {
@@ -28,11 +29,13 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     // }
 
     protected SubTournament(Builder<?,ResultType> builder) {
+        id = nextId++;
         players = builder.subTournament.players;
         observers = builder.subTournament.observers;
         for (Observer o : observers) {
             addObserver(o);
         }
+        tournament = builder.subTournament.tournament;
         if (builder.playerSource != null) {
             PlayerParser pp = new PlayerParser();
             List<Player> players = (List<Player>) pp.parse(builder.playerSource);
@@ -67,6 +70,11 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             }
             return me();
         }
+
+        public T setTournament(Tournament tournament) {
+            subTournament.tournament = tournament;
+            return me();
+        }
         
         public T playerSource(String source) {
             playerSource = source;
@@ -79,8 +87,19 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
         return nodes.iterator(); // TODO: implement topological sort
     }
 
+    public int getId() {
+            return id;
+    }
+    
     public abstract void startBuild();
 
     protected abstract void dummyRun();
-    
+
+    protected abstract void receiveHook(Player<ResultType> p);
+
+    public void acceptPlayer(Player<ResultType> p) {
+        players.add(p);
+        receiveHook(p);
+    }
+
 }
