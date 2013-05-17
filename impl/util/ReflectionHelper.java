@@ -2,6 +2,7 @@ package util;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 
 import java.lang.reflect.*;
@@ -71,13 +72,8 @@ public class ReflectionHelper {
         for(int i = 0; i < paramtypes.length; i++) {
             paramtypes[i] = makePrimitive(param.get(i).getClass());
         }
-        if (name.equals("sendTo")) {
-            System.out.println("hej");
-            paramtypes[1] = SetModifier.class;
-        }
-
         try {
-            Method method = type.getMethod(name, paramtypes);
+            Method method = findMethod(type, name, paramtypes);
             return method.invoke(obj, param.toArray());
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder(type.getName() +
@@ -119,5 +115,68 @@ public class ReflectionHelper {
             default:
                 return type;
         }
+    }
+
+    private Method findMethod(Class<?> type, String name, Class<?>[] paramtypes) {
+        try {
+            return type.getMethod(name, paramtypes);
+        } catch (NoSuchMethodException e) {
+            return findMethodHelper(type, name, paramtypes, 0);
+        }
+    }
+
+    // recursive, horrible complexity... might cause stack overflow
+    private Method findMethodHelper(Class<?> type, String name, Class<?>[] paramtypes, int i) {
+        if (i==paramtypes.length) {
+            try {
+                return type.getMethod(name, paramtypes);
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            for (Class<?> clazz : getSuperTypes(paramtypes[i])) {
+                Class<?> tmp = paramtypes[i];
+                paramtypes[i] = clazz;
+                Method m = findMethodHelper(type, name, paramtypes, i+1);
+                paramtypes[i] = tmp;
+                if (m!=null) {
+                    return m;
+                }
+            }
+            return null;
+        }
+    }
+
+    private Class<?>[] getSuperTypes(Class<?> type) {
+        Class<?>[] superClasses = getSuperClasses(type).toArray(new Class<?>[]{});
+        Class<?>[] interfaces = type.getInterfaces();
+        Class<?>[] superTypes;
+        if (type.isInterface()) {
+            superTypes = new Class<?>[superClasses.length + interfaces.length + 1];
+            superTypes[superTypes.length-1] = type;
+        } else {
+            superTypes = new Class<?>[superClasses.length + interfaces.length];
+        }
+        System.arraycopy(superClasses,0,superTypes,0,superClasses.length);
+        System.arraycopy(interfaces,0,superTypes,superClasses.length,interfaces.length);
+        return superTypes;
+    }
+
+    private List<Class<?>> getSuperClasses(Class<?> type) {
+        Class<?> superClass = type.getSuperclass();
+        List<Class<?>> list;
+        if (superClass == null) {
+            list = new LinkedList<>();
+        } else {
+            list = getSuperClasses(superClass);
+        }
+        list.add(type);
+        return list;
+    }
+
+    public static void main(String[] args) throws Exception{
+        generic.Bracket.Builder<Integer> builder = new generic.Bracket.Builder<>();
+        Method m = new ReflectionHelper().findMethod(builder.getClass(), "sendTo", new Class<?>[]{String.class,TopMod.class});
+        System.out.println(m);
     }
 }
