@@ -1,6 +1,8 @@
-package generic;
+package model;
 
 import java.util.*;
+import sets.*;
+import parse.*;
 
 public class Tournament implements Iterable<SubTournament<?>> {
     private List<SubTournament<?>> subtournaments;

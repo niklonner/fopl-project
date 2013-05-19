@@ -1,7 +1,7 @@
 package viewer;
 
 import java.util.List;
-import generic.SubTournament;
+import model.SubTournament;
 
 import java.awt.*;
 import java.awt.event.*;

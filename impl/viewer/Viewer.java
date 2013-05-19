@@ -6,7 +6,7 @@ import javax.swing.*;
 import org.java.ayatana.ApplicationMenu;
 import java.io.*;
 
-import util.TournamentParser;
+import parse.TournamentParser;
 import util.ContextException;
 
 public class Viewer extends JFrame implements ActionListener, DisplayPanel.DisplayListener {

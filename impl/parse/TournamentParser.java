@@ -1,10 +1,12 @@
-package util;
+package parse;
 
 import Swag.*;
 import Swag.Absyn.*;
 
-import generic.*;
+import model.*;
 import util.*;
+import parse.*;
+import sets.*;
 
 import java_cup.runtime.*;
 import java.io.*;
@@ -39,8 +41,8 @@ public class TournamentParser {
         }
     }
 
-    public List<generic.SubTournament<?>> parseString(String sourceCode) throws ContextException {
-        List<generic.SubTournament<?>> subt;
+    public List<model.SubTournament<?>> parseString(String sourceCode) throws ContextException {
+        List<model.SubTournament<?>> subt;
         Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentString(sourceCode);
         Worker visitor = new Worker();
         if(parse_tree != null) {
@@ -54,9 +56,9 @@ public class TournamentParser {
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
 
-        List<generic.SubTournament<?>> subTournaments = new ArrayList<>();
+        List<model.SubTournament<?>> subTournaments = new ArrayList<>();
 
-        generic.SubTournament.Builder<?,Integer> builder;
+        model.SubTournament.Builder<?,Integer> builder;
         int nrParam;
 
         ReflectionHelper rh = new ReflectionHelper();

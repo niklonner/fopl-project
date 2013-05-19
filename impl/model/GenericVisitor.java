@@ -1,4 +1,4 @@
-package generic;
+package model;
 import Swag.Absyn.*;
 import Swag.*;
 

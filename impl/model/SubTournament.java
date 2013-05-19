@@ -1,7 +1,9 @@
-package generic;
+package model;
 
 import java.util.*;
 import util.*;
+import sets.*;
+import parse.*;
 
 public abstract class SubTournament<ResultType extends Comparable<? super ResultType>>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {

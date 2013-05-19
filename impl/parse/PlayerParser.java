@@ -1,8 +1,8 @@
-package util;
+package parse;
 
 import Play.*;
 import Play.Absyn.*;
-import generic.Player;
+import model.Player;
 
 import java_cup.runtime.*;
 import java.io.*;
@@ -23,7 +23,13 @@ public class PlayerParser {
     }
 
     public List<Player> parse(String path) {
-        Play.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
+        Play.Absyn.Prog parse_tree = null;
+        try {
+            parse_tree = BasicParser.parseTournamentFile(path);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
         Worker worker = new Worker();
         if(parse_tree != null) {
             parse_tree.accept(worker);

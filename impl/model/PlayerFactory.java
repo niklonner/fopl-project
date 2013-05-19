@@ -1,4 +1,4 @@
-package generic;
+package model;
 
 /*
  * Standard Player factory. Should be passed to tournament creation.

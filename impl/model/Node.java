@@ -1,7 +1,9 @@
-package generic;
+package model;
 
 import java.util.*;
 import util.*;
+import sets.*;
+import parse.*;
 
 /*
   Class for nodes in tournament graph.
