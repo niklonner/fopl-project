@@ -1,8 +1,18 @@
 "Swagger" - a DSL for specifying tournament schemes.
 ====================================================
 
+Requirements
+------------
+The following program is most easily built using GNU Make and expects a Java 7 environment.
+
+Please make sure that the java and javac commands are available on the PATH.
+
 How to compile
----------------------------
-Run "make" in the project folder. To start the schema editor/viewer run "make run"
-in the src folder. Make sure that this is done after the grammar is compiled in
-the bnfc folder (which should be the case if the global make executed successfully).
+--------------
+Execute "make" in the project folder.
+
+How to start the schema editor/viewer
+-------------------------------------
+Execute "make run" in the project or "src" folder.
+
+
