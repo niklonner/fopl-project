@@ -5,6 +5,13 @@ import util.*;
 import sets.*;
 import parse.*;
 
+import java.awt.*;
+import java.awt.geom.*;
+
+import org.apache.batik.swing.*;
+import org.apache.batik.svggen.*;
+
+
 // KEYWORDS
 // sendto
 // groupby
@@ -15,18 +22,18 @@ import parse.*;
 
 public class Bracket<ResultType extends Comparable<? super ResultType>> extends SubTournament<ResultType> {
     private static Random rnd = new Random();
-    
+
     private int groupBy;
     private int advancing;
     private int playUntil;
-    private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
+    private java.util.List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
     // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
-    private List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
+    private java.util.List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
 
-    private List<BracketNodeLayer> nodeLayers = new ArrayList<>();
+    private java.util.List<BracketNodeLayer> nodeLayers = new ArrayList<>();
     private FinalLayerNode finalLayer;
     private boolean built = false;
-    
+
     // only for use by Builder
     private Bracket() {
         super();
@@ -76,7 +83,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             subTournament.groupBy = (int)groupBy;
             return this;
         }
-        
+
         public Builder<ResultType> playUntil(int playUntil) {
             subTournament.playUntil = playUntil;
             return this;
@@ -90,12 +97,12 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         public Builder<ResultType> sendLosersTo(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             return sendToPerNode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, mod));
         }
-        
+
         public Builder<ResultType> sendToPerNode(PlayerReceiver<ResultType> receiver, SetModifier<Player<ResultType>> mod) {
             subTournament.perNodeReceivers.add(new Pair<>(receiver, mod));
             return this;
         }
-        
+
     }
 
     // should perhaps be named addPlayer
@@ -133,7 +140,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         previousLayer.connectWith(finalLayer);
         built = true;
         System.out.println(nodes.size() + " nodes");
-        dummyRun();
+        //dummyRun();
     }
 
     protected void dummyRun() {
@@ -191,6 +198,49 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         return ret;
     }
 
+    private int xSpacing = 60;
+    public void  draw(SVGGraphics2D g) {
+        Map<Node, Point> positions = new HashMap<>();
+
+        Shape box = new Rectangle2D.Double(0,0,50,50);
+        Shape circle = new Ellipse2D.Double(0, 0, 50, 50);
+
+        BracketNodeLayer firstLayer = nodeLayers.get(0);
+
+        for(int i = 0; i < firstLayer.nodes.size(); i++) {
+            Node node = firstLayer.nodes.get(i);
+
+            // Set positions
+            for(PlayerReceiver<?> receiver : node.getReceivers()) {
+                //if(receiver instanceof Node) {
+                    //positions.put(((Node) receiver), i * xSpacing);
+                //}
+            }
+
+            // Draw node
+            g.setPaint(Color.white);
+            g.fill(box);
+
+            // Draw players
+            Set<Player<?>> players = node.getPlayers();
+            int halfsize = players.size() * xSpacing;
+            g.translate(-(halfsize / 2), 60);
+            for(int j = 0; j < players.size(); j++) {
+                g.translate(j*xSpacing, 0);
+                g.setPaint(Color.red);
+                g.fill(circle);
+            }
+            g.translate(halfsize / 2, -60);
+        }
+
+        //for(int l = 1; l < nodeLayers.size(); l++) {
+            //BracketNodeLayer layer = nodeLayers.get(l);
+
+            //for(int n = 0; n < layer.size(); n++) {
+            //
+        //}
+    }
+
     // node for remaining players ("winners") when bracket is done
     // this enables ranking of all "winners", if more than one
     private class FinalLayerNode extends Node<ResultType> {
@@ -201,16 +251,16 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                 sendPlayersOff();
             }
         }
-        
+
         public void addResult(Integer i, ResultType r) {
             // should not be called
         }
     }
-    
+
     private class BracketNodeLayer {
-        List<BracketNode<ResultType>> nodes = new ArrayList<>();
+        java.util.List<BracketNode<ResultType>> nodes = new ArrayList<>();
         SetModifier<Player<ResultType>> advancingMod;
-        
+
         BracketNodeLayer(int numNodes) {
             advancingMod = new TopMod<Player<ResultType>>(advancing);
             for (int i=0;i<numNodes;i++) {

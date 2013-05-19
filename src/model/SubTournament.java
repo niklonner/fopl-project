@@ -5,6 +5,8 @@ import util.*;
 import sets.*;
 import parse.*;
 
+import org.apache.batik.svggen.*;
+
 public abstract class SubTournament<ResultType extends Comparable<? super ResultType>>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {
     private static int nextId = 0;
@@ -13,6 +15,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     protected List<Player<ResultType>> players = new ArrayList<>();
     protected List<Node<ResultType>> nodes = new ArrayList<>();
     protected List<Observer> observers = new ArrayList<>();
+    public abstract void draw(SVGGraphics2D g);
 
     // only for use by subclasses
     protected SubTournament() {
@@ -60,21 +63,21 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             }
             return me();
         }
-        
+
         public T setObservers(List<Observer> observers) {
             if (observers != null) {
                 subTournament.observers = new ArrayList<>(observers);
             }
             return me();
         }
-        
+
         public T playerSource(String source) {
             playerSource = source;
             return me();
         }
 
     }
-    
+
     public Iterator<Node<ResultType>> iterator() {
         return nodes.iterator(); // TODO: implement topological sort
     }
@@ -82,5 +85,5 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     public abstract void startBuild();
 
     protected abstract void dummyRun();
-    
+
 }

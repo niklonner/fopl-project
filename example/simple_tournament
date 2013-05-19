@@ -1,5 +1,5 @@
 "Simple Name" : bracket {
-    player_source: "../syntax/players";
+    player_source: "players";
 //    send_losers_to: loser
     group_by: 2;
 //    advance: 5 - 2;
