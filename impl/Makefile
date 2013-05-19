@@ -113,4 +113,3 @@ clean:
 	rm $(SWAGDIR)/Swag/BasicParser.*
 	rm $(PLAYDIR)/Play/BasicParser.*
 	rm */*.class
-	rm *.class
