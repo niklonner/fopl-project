@@ -1,5 +1,4 @@
 LIB = ../../lib/:../../lib/Cup/java-cup-11a.jar
-IMPL = ../../impl
 TEST = ../../lib/JUnit/junit.jar:../../lib/JUnit/hamcrest.jar:../../test
 
 

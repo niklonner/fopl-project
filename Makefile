@@ -1,3 +1,3 @@
 all:
 	cd bnfc; make
-	cd impl; make
+	cd src; make
