@@ -199,38 +199,57 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     }
 
     private int xSpacing = 60;
+    private int ySpacing = 60;
+    private Map<Node, Pair<Double, Integer>> parentPos = new HashMap<>();
     public void  draw(SVGGraphics2D g) {
-        Map<Node, Point> positions = new HashMap<>();
-
-        Shape box = new Rectangle2D.Double(0,0,50,50);
-        Shape circle = new Ellipse2D.Double(0, 0, 50, 50);
 
         BracketNodeLayer firstLayer = nodeLayers.get(0);
 
+        int firstTrans = 0;
         for(int i = 0; i < firstLayer.nodes.size(); i++) {
             Node node = firstLayer.nodes.get(i);
 
-            // Set positions
-            for(PlayerReceiver<?> receiver : node.getReceivers()) {
-                //if(receiver instanceof Node) {
-                    //positions.put(((Node) receiver), i * xSpacing);
-                //}
+            updateParentNodesPosistions(node, i*xSpacing);
+
+            // Draw players
+            Set<Player<?>> players = node.getPlayers();
+            //for(int j = 1; j <= players.size(); j++) {
+            for(int j = 0; j < 2; j++) {
+                Shape circle = new Ellipse2D.Double(i*xSpacing + 10, j * 35, 30, 30);
+                g.setPaint(Color.red);
+                g.fill(circle);
             }
 
             // Draw node
             g.setPaint(Color.white);
+            //Shape box = new Rectangle2D.Double(i*xSpacing, 20 + players.size()*40,50,50);
+            Shape box = new Rectangle2D.Double(i*xSpacing, 2*35,50,50);
             g.fill(box);
 
-            // Draw players
-            Set<Player<?>> players = node.getPlayers();
-            int halfsize = players.size() * xSpacing;
-            g.translate(-(halfsize / 2), 60);
-            for(int j = 0; j < players.size(); j++) {
-                g.translate(j*xSpacing, 0);
-                g.setPaint(Color.red);
-                g.fill(circle);
+            //firstTrans = players.size() * 35;
+            firstTrans = 2 * 35;
+        }
+
+        g.translate(0, firstTrans);
+
+        for(int i = 1; i < nodeLayers.size(); i++) {
+            g.translate(0, ySpacing);
+            //g.transform(AffineTransform.getTranslateInstance(0, ySpacing));
+            //g.rotate(0.5);
+            BracketNodeLayer layer = nodeLayers.get(i);
+
+            for(int j = 0; j < layer.nodes.size(); j++) {
+                Node node = layer.nodes.get(j);
+
+                int xPos = parentPos.get(node).fst.intValue();
+                updateParentNodesPosistions(node, xPos);
+
+
+                g.setPaint(Color.white);
+                Shape box = new Rectangle2D.Double(xPos, 0,50,50);
+                g.fill(box);
+
             }
-            g.translate(halfsize / 2, -60);
         }
 
         //for(int l = 1; l < nodeLayers.size(); l++) {
@@ -239,6 +258,25 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             //for(int n = 0; n < layer.size(); n++) {
             //
         //}
+    }
+
+    private void updateParentNodesPosistions(Node node, double xPos) {
+            java.util.List<PlayerReceiver<?>> receivers = node.getReceivers();
+            // Set parentPos
+            for(PlayerReceiver<?> receiver : receivers) {
+                if(receiver instanceof Node) {
+                    Node n = (Node) receiver;
+                    Pair<Double, Integer> p = parentPos.get(n);
+                    if(p == null) {
+                        parentPos.put(n, new Pair(xPos, 1));
+                    } else {
+                        double fst = p.fst * p.snd.doubleValue();
+                        fst += xPos;
+                        int snd = p.snd + 1;
+                        parentPos.put(n, new Pair(fst/snd, snd));
+                    }
+                }
+            }
     }
 
     // node for remaining players ("winners") when bracket is done
