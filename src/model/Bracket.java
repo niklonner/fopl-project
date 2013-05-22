@@ -150,15 +150,18 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             // advance past occupied nodes
             int playerCounter = prevLayer == null ? 0 :
                 prevLayer.nodes.size()*advancing;
+            if (prevLayer != null) {
+                System.out.println("previous node layer size" + prevLayer.nodes.size());
+            }
             int occupiedNodes = prevLayer == null ? 0 :
                 (int)Math.ceil((double)playerCounter/groupBy);
             for (int i=0;i<occupiedNodes;i++) {
                 node = it.next();
-                System.out.println(node.getId());
             }
             for (Player<ResultType> p : players) {
                 if ((!p.attributeIsSet("level") && level==0) || (p.attributeIsSet("level") && (int)p.get("level") == level)) {
                     System.out.println("add player " + p.getId() + " at level " + level);
+                    System.out.println(playerCounter);
                     if (playerCounter % groupBy == 0) {
                         node = it.next();
                     }
