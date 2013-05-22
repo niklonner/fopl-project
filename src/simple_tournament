@@ -1,10 +1,10 @@
 "simple" : bracket {
     player_source: "../src/players";
 //    send_losers_to: loser
-    group_by: 2;
+    group_by: 4;
 //    advance: 5 - 2;
 //    advance: 5 / 2;
-    advance: 5 % 2;
+    advance: 1;
 //    advance: 5 ^ 2;
-    play_until: 1;
+    play_until: 2;
 }

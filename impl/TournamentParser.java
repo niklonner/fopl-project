@@ -323,26 +323,23 @@ public class TournamentParser {
             Object x = stack.pop();
 
             if (x instanceof Integer) {
-                SetModifier<Player<?>> sm = null;
-                boolean push = false;
-                if (y instanceof SetModifier<?>) {
-                    sm = new TopMod<Player<?>>((int)x,(SetModifier<Player<?>>)y);
-                    push = true;
-                } else if (y instanceof String && ((String)y).equalsIgnoreCase("all")) {
-                    sm = new IdentityMod<Player<?>>();
-                    push = true;
-                }
-                if (push) {
-                    stack.push(sm);
-                }
+                SetModifier<Player<?>> sm =  new TopMod<Player<?>>((int)x,returnModifier(y));
+                stack.push(sm);
             }
         }
+        
         public void visitEBottom(Swag.Absyn.EBottom ebottom)
         {
-            /* Code For EBottom Goes Here */
-
             visitInteger(ebottom.integer_);
             ebottom.exp_.accept(this);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            if (x instanceof Integer) {
+                SetModifier<Player<?>> sm =  new BottomMod<Player<?>>((int)x,returnModifier(y));
+                stack.push(sm);
+            }
         }
         
         public void visitEint(Swag.Absyn.Eint eint) {
@@ -386,6 +383,17 @@ public class TournamentParser {
             }
             Collections.reverse(list);
             return list;
+        }
+
+        // takes care of reserved words, e.g. replaces "all" with
+        // an IdentityMod
+        private SetModifier<Player<?>> returnModifier(Object o) {
+            if (o instanceof SetModifier<?>) {
+                return (SetModifier<Player<?>>) o;
+            } else if(o instanceof String && ((String)o).equalsIgnoreCase("all")) {
+                return new IdentityMod<>();
+            }
+            throw new IllegalArgumentException("set modifier expected");
         }
     }
 }
