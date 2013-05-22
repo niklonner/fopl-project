@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Arrays;
 
+import sets.*;
 import java.lang.reflect.*;
 
 public class ReflectionHelper {
@@ -175,7 +176,7 @@ public class ReflectionHelper {
     }
 
     public static void main(String[] args) throws Exception{
-        generic.Bracket.Builder<Integer> builder = new generic.Bracket.Builder<>();
+        model.Bracket.Builder<Integer> builder = new model.Bracket.Builder<>();
         Method m = new ReflectionHelper().findMethod(builder.getClass(), "sendTo", new Class<?>[]{String.class,TopMod.class});
         System.out.println(m);
     }

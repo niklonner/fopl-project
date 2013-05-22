@@ -60,7 +60,8 @@ public class TournamentParser {
             parse_tree.accept(visitor);
             /*subt =*/ visitor.subTournaments.get(0).startBuild();
         }
-        return visitor.subTournaments;
+//        return visitor.subTournaments;
+        return null;
     }
 
 
@@ -93,12 +94,12 @@ public class TournamentParser {
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
 
-        Map<String,generic.SubTournament<?>> subTournaments = new TreeMap<>();
+        Map<String,model.SubTournament<?>> subTournaments = new TreeMap<>();
 
         Tournament<Integer> superTournament = new Tournament<>();
             
         
-        generic.SubTournament.Builder<?,Integer> builder;
+        model.SubTournament.Builder<?,Integer> builder;
         int nrParam;
 
         ReflectionHelper rh = new ReflectionHelper();

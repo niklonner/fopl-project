@@ -1,0 +1,25 @@
+///* Double bracket */
+
+"winner bracket" : bracket {
+    player_source: "../src/players";
+    group_by: 2;
+    advance: 1;
+    play_until: 1;
+    send_losers_to: "loser bracket";
+//    send {#player.losses >= 1} to loser_bracket; // Run after each game?
+    send_to: "final", top 1 all;
+}
+
+"loser bracket" : bracket {
+    group_by: 2;
+    advance: 1;
+    play_until: 1;
+    send_to: "final", top 1 all;
+}
+
+"final" : bracket {
+    reset_levels;
+    group_by: 2;
+    advance: 1;
+    play_until: 1;
+}
