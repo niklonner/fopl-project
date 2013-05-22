@@ -270,20 +270,7 @@ public class TournamentParser {
                 throw new UnsupportedOperationException();
             }
         }
-        public void visitEintersect(Swag.Absyn.Eintersect eintersect)
-        {
-            /* Code For Eintersect Goes Here */
 
-            eintersect.exp_1.accept(this);
-            eintersect.exp_2.accept(this);
-        }
-        public void visitENotIntersect(Swag.Absyn.ENotIntersect enotintersect)
-        {
-            /* Code For ENotIntersect Goes Here */
-
-            enotintersect.exp_1.accept(this);
-            enotintersect.exp_2.accept(this);
-        }
         public void visitEdiv(Swag.Absyn.Ediv ediv) {
             ediv.exp_1.accept(this);
             ediv.exp_2.accept(this);
@@ -354,6 +341,35 @@ public class TournamentParser {
             visitIdent(efol.ident_);
         }
 
+        public void visitEintersect(Swag.Absyn.Eintersect eintersect)
+        {
+            /* Code For Eintersect Goes Here */
+
+            eintersect.exp_1.accept(this);
+            eintersect.exp_2.accept(this);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            SetModifier<Player<?>> sm =  new IntersectMod<Player<?>>(setModifierReplaceKeywords(x),setModifierReplaceKeywords(y));
+            stack.push(sm);
+
+        }
+        public void visitENotIntersect(Swag.Absyn.ENotIntersect enotintersect)
+        {
+            /* Code For ENotIntersect Goes Here */
+
+            enotintersect.exp_1.accept(this);
+            enotintersect.exp_2.accept(this);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            SetModifier<Player<?>> sm =  new NotIntersectMod<Player<?>>(setModifierReplaceKeywords(x),setModifierReplaceKeywords(y));
+            stack.push(sm);
+
+        }
+        
         public void visitETop(Swag.Absyn.ETop etop)
         {
             visitInteger(etop.integer_);
@@ -407,7 +423,6 @@ public class TournamentParser {
         }
         public void visitChar(Character c) {
             stack.push(c);
-
         }
         public void visitString(String s) {
             stack.push(s);

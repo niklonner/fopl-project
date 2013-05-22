@@ -66,7 +66,7 @@ model/BracketNode.class: model/BracketNode.java
 	javac -cp $(CP) model/BracketNode.java
 
 model/Player.class: model/Player.java
-	javac -cp $(CP) generic/Player.java
+	javac -cp $(CP) model/Player.java
 
 #parse
 parse/TournamentParser.class: parse/TournamentParser.java

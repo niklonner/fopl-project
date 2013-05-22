@@ -84,4 +84,14 @@ public class Player<ResultType extends Comparable<? super ResultType>>
             return res != 0 ? -res : tiebreaker;
         }
     }
+
+    public boolean equals(Object o) {
+        if (this==o) {
+            return true;
+        } else if (o==null || getClass()!=o.getClass()) {
+            return false;
+        } else {
+            return id == ((Player<ResultType>)o).id;
+        }
+    }
 }
