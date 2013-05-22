@@ -125,16 +125,27 @@ public class TournamentParser {
             System.out.println("Making tournament: " + subtournament.string_);
             //subt = new SubTournament(subtournament.string_);
 
+            StringBuilder clazz = new StringBuilder();
+            clazz.append("model.");
+            clazz.append(Character.toUpperCase(subtournament.ident_.charAt(0)));
+            clazz.append(subtournament.ident_.substring(1).toLowerCase());
+            clazz.append("$Builder");
 
-            switch (subtournament.ident_) {
-            case "bracket":
-                builder = new Bracket.Builder<Integer>();
-                break;
-            default:
+            try {
+                builder = (model.SubTournament.Builder<?,Integer>)Class.forName(clazz.toString()).newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
                 System.err.println("Unrecognizable subtournament type \"" +
                                    subtournament.ident_ + "\".");
                 System.exit(1);
             }
+            
+            /*                        switch (subtournament.ident_) {
+                                      case "bracket":
+                                      builder = new Bracket.Builder<Integer>();
+                                      break;
+                                      default:
+                                      }*/
 
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
 
@@ -352,7 +363,7 @@ public class TournamentParser {
             Object x = stack.pop();
 
             if (x instanceof Integer) {
-                SetModifier<Player<?>> sm =  new TopMod<Player<?>>((int)x,returnModifier(y));
+                SetModifier<Player<?>> sm =  new TopMod<Player<?>>((int)x,setModifierReplaceKeywords(y));
                 stack.push(sm);
             }
         }
@@ -366,7 +377,7 @@ public class TournamentParser {
             Object x = stack.pop();
 
             if (x instanceof Integer) {
-                SetModifier<Player<?>> sm =  new BottomMod<Player<?>>((int)x,returnModifier(y));
+                SetModifier<Player<?>> sm =  new BottomMod<Player<?>>((int)x,setModifierReplaceKeywords(y));
                 stack.push(sm);
             }
         }
@@ -416,7 +427,7 @@ public class TournamentParser {
 
         // takes care of reserved words, e.g. replaces "all" with
         // an IdentityMod
-        private SetModifier<Player<?>> returnModifier(Object o) {
+        private SetModifier<Player<?>> setModifierReplaceKeywords(Object o) {
             if (o instanceof SetModifier<?>) {
                 return (SetModifier<Player<?>>) o;
             } else if(o instanceof String && ((String)o).equalsIgnoreCase("all")) {
