@@ -112,22 +112,23 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         }
         // build first level
         int numPlayers = numPlayersWithLevel(0);
-        int numNodes = numPlayers/groupBy;
-        BracketNodeLayer previousLayer = new BracketNodeLayer(numNodes);
+        int numNodes = (int)Math.ceil((double)numPlayers/groupBy);
+        BracketNodeLayer previousLayer = new BracketNodeLayer(numNodes,numPlayers);
         nodeLayers.add(previousLayer);
-        int remaining = numNodes*advancing;
+        //        int remaining = previousLa;
         // build remaining levels
         int level = 1;
-        numPlayers = numPlayersWithLevel(level) + remaining;
+        numPlayers = numPlayersWithLevel(level) + previousLayer.getAdvancing();
         while (numPlayers > playUntil) {
-            numNodes = numPlayers/groupBy;
-            BracketNodeLayer layer = new BracketNodeLayer(numNodes);
+            numNodes = (int)Math.ceil((double)numPlayers/groupBy);
+            System.out.println(numPlayers);
+            BracketNodeLayer layer = new BracketNodeLayer(numNodes,numPlayers);
             previousLayer.connectWith(layer);
             nodeLayers.add(layer);
             previousLayer = layer;
-            remaining = numNodes*advancing;
+            //            remaining = numNodes*advancing;
             level++;
-            numPlayers = numPlayersWithLevel(level) + remaining;
+            numPlayers = numPlayersWithLevel(level) + previousLayer.getAdvancing();
         }
         finalLayer = new FinalLayerNode();
         for (Pair<String, SetModifier<Player<ResultType>>> p : receivers) {
@@ -145,26 +146,20 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         for (BracketNodeLayer bnl : nodeLayers) {
             Iterator<BracketNode<ResultType>> it = bnl.nodes.iterator();
             BracketNode<ResultType> node = null;
-            //            while (it.hasNext() && (node = it.next()).isFull()) {
-            //            }
-            // advance past occupied nodes
             int playerCounter = prevLayer == null ? 0 :
-                prevLayer.nodes.size()*advancing;
-            if (prevLayer != null) {
-                System.out.println("previous node layer size" + prevLayer.nodes.size());
-            }
+                prevLayer.getAdvancing();
             int occupiedNodes = prevLayer == null ? 0 :
                 (int)Math.ceil((double)playerCounter/groupBy);
+            // advance past occupied nodes
             for (int i=0;i<occupiedNodes;i++) {
                 node = it.next();
             }
             for (Player<ResultType> p : players) {
                 if ((!p.attributeIsSet("level") && level==0) || (p.attributeIsSet("level") && (int)p.get("level") == level)) {
-                    System.out.println("add player " + p.getId() + " at level " + level);
-                    System.out.println(playerCounter);
                     if (playerCounter % groupBy == 0) {
                         node = it.next();
                     }
+                    System.out.println("add player " + p.getId() + " at node " + node.getId()  + " (level " + level + ")");
                     node.acceptPlayer(p);
                     playerCounter++;
                 }
@@ -225,19 +220,34 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     private class BracketNodeLayer {
         List<BracketNode<ResultType>> nodes = new ArrayList<>();
         SetModifier<Player<ResultType>> advancingMod;
+        int advancingPlayers;
+        int numPlayers;
         
-        BracketNodeLayer(int numNodes) {
+        BracketNodeLayer(int numNodes, int numPlayers) {
+            System.out.printf("building, numNodes=%d, numPlayers=%d\n", numNodes, numPlayers);
             advancingMod = new TopMod<Player<ResultType>>(advancing);
+            int leftOverPlayers = numPlayers%numNodes;
+            advancingPlayers = numPlayers/groupBy * advancing + (leftOverPlayers == 0 ? 0 : Math.min(leftOverPlayers,advancing));
+            this.numPlayers = numPlayers;
             for (int i=0;i<numNodes;i++) {
                 BracketNode.Builder<ResultType> builder = new BracketNode.Builder<>();
-                builder.setNumPlayers(groupBy);
+                if (leftOverPlayers != 0 && i==numNodes-1) {
+                    builder.setNumPlayers(leftOverPlayers);
+                    builder.setAdvancing(Math.min(advancing,leftOverPlayers));
+                } else {
+                    builder.setNumPlayers(groupBy);
+                    builder.setAdvancing(advancing);
+                }
                 builder.setObservers(observers);
-                builder.setAdvancing(advancing);
                 // set comparator
                 BracketNode<ResultType> newNode = new BracketNode<ResultType>(builder);
                 nodes.add(newNode);
                 Bracket.this.nodes.add(newNode);
             }
+        }
+
+        int getAdvancing() {
+            return advancingPlayers;
         }
 
         int size() {
