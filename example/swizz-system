@@ -1,4 +1,5 @@
 /* swizz-system*/
+/* not implemented */
 
 tournament : round-robin {
     player_source: "~/players.json";

@@ -6,10 +6,9 @@
     advance: 1;
     play_until: 1;
 //    send_losers_to: "loser bracket";
-//    send {#player.losses >= 1} to loser_bracket; // Run after each game?
     send_to: "final", top 1 all;
-    send_to_per_node: "loser bracket", all.losses;
-//    send_to_per_node: "loser bracket", all.(losses > 0);
+//    send_to_per_node: "loser bracket", all.losses;
+    send_to_per_node: "loser bracket", all.losses > 0;
 }
 
 "loser bracket" : bracket {

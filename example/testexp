@@ -1,7 +1,0 @@
-blabla {
-    take top 5 from hello intersect something;
-    (take top 5 from hello) intersect [bla, hej];
-    hello minus hej;
-    infinals = take top 5 from (hello minus (bla+lol)) intersect (with "lady");
-    take top 2 from with "junior" minus infinals;
-};

@@ -32,20 +32,18 @@ Emul          . Exp1 ::= Exp1 "*" Exp2;
 Emod          . Exp1 ::= Exp1 "%" Exp2;
 Epow          . Exp2 ::= Exp2 "^" Exp3;
 Efol          . Exp3 ::= Exp3 "." Ident;
-Efolcmp       . Exp3 ::= Exp3 "." "(" Ident CmpOp Exp ")";
+Efolcmp       . Exp3 ::= Exp3 "." Ident CmpOp Exp;
 ETop          . Exp4 ::= "top" Integer Exp4;
 EBottom       . Exp4 ::= "bottom" Integer Exp4;
 Eint          . Exp5 ::= Integer;
 EDouble       . Exp5 ::= Double;
 EVar          . Exp5 ::= Ident;
 EString       . Exp5 ::= String;
---EParamMethod  . Exp ::= "(" Ident ":" [Exp] ")";
---EMethod       . Exp ::= "(" Ident ")";
 
 COeq          . CmpOp ::= "==";
 COlt          . CmpOp ::= "<";
 COle          . CmpOp ::= "<=";
 COgt          . CmpOp ::= ">";
-COge        . CmpOp ::= ">=";
+COge          . CmpOp ::= ">=";
 
 coercions Exp 5;
