@@ -10,9 +10,10 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     private static int nextId = 0;
     private int id;
     protected String name;
-    protected List<Player<ResultType>> players = new ArrayList<>();
+    protected SortedSet<Player<ResultType>> players = new TreeSet<>();
     protected List<Node<ResultType>> nodes = new ArrayList<>();
     protected List<Observer> observers = new ArrayList<>();
+    protected Comparator<Player<ResultType>> comp;
     protected Tournament tournament;
 
     // only for use by subclasses
@@ -30,7 +31,13 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
 
     protected SubTournament(Builder<?,ResultType> builder) {
         id = nextId++;
-        players = builder.subTournament.players;
+        comp = builder.subTournament.comp;
+        if (comp != null) {
+            players = new TreeSet<Player<ResultType>>(comp);
+            players.addAll(builder.subTournament.players);
+        } else {
+            players = builder.subTournament.players;
+        }
         observers = builder.subTournament.observers;
         for (Observer o : observers) {
             addObserver(o);
@@ -57,9 +64,9 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
         protected abstract T me();
         public abstract SubTournament<ResultType> getSubTournament();
 
-        public T setPlayers(List<Player<ResultType>> players) {
+        public T setPlayers(SortedSet<Player<ResultType>> players) {
             if (players != null) {
-                subTournament.players = new ArrayList<>(players);
+                subTournament.players = new TreeSet<>(players);
             }
             return me();
         }
@@ -81,6 +88,12 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
             return me();
         }
 
+        public T setComparator(Comparator<Player<ResultType>> comp) {
+            subTournament.comp = comp;
+            return me();
+        }
+
+        
     }
     
     public Iterator<Node<ResultType>> iterator() {

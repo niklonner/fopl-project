@@ -16,7 +16,8 @@ all: BasicParser util/ContextException.class parse/TournamentParser.class parse/
     sets/Operator.class sets/EqOp.class sets/LtOp.class \
     sets/LeOp.class sets/GtOp.class sets/GeOp.class \
 	util/ContextException.class util/ReflectionHelper.class \
-	util/Pair.class viewer/DisplayPanel.class viewer/Viewer.class viewer/CodeArea.class viewer/Main.class
+	util/Pair.class viewer/DisplayPanel.class viewer/Viewer.class viewer/CodeArea.class viewer/Main.class \
+	bwlag
 
 run: all
 	java -cp $(CP) viewer/Main
@@ -146,6 +147,12 @@ test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 
 ../test/util/ReflectionHelperTest.class: util/ReflectionHelper.class ../test/util/ReflectionHelperTest.java
 	javac -cp $(CP):$(TEST) ../test/util/ReflectionHelperTest.java
+
+#bwlag
+bwlag: bwlag/model/CmpStandard.class
+
+bwlag/model/CmpStandard.class: bwlag/model/CmpStandard.java
+	javac -cp $(CP) bwlag/model/CmpStandard.java
 
 #clean
 clean:

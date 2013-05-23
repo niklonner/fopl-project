@@ -45,9 +45,14 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     protected Node(Builder<?,ResultType> builder) {
         id = builder.node.id;
         name = builder.node.name;
-        players = builder.node.players;
         toReceivers = builder.node.toReceivers;
         comp = builder.node.comp;
+        if (comp != null) {
+            players = new TreeSet<>(comp);
+            players.addAll(builder.node.players);
+        } else{
+            players = builder.node.players;
+        }
         for (Observer o : builder.observers) {
             addObserver(o);
         }
