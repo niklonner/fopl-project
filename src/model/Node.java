@@ -11,7 +11,7 @@ import parse.*;
   End applications should observe Nodes objects to respond to changes.
 */
 
-public abstract class Node<ResultType extends Comparable<? super ResultType>> extends Observable
+public abstract class Node<ResultType> extends Observable
     implements PlayerReceiver<ResultType> {
     private static int nextId = 0;
     private int id;
@@ -58,7 +58,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         }
     }
 
-    public static abstract class Builder<T extends Builder<T, ResultType>, ResultType extends Comparable<? super ResultType>> {
+    public static abstract class Builder<T extends Builder<T, ResultType>, ResultType> {
         protected Node<ResultType> node;
         protected List<Observer> observers;
 
@@ -130,11 +130,11 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
     protected void sendPlayersOff() {
         System.out.printf("node %d sending players off\n",getId());
         for (Player<ResultType> p : players) {
-            System.out.printf("\tPlayer %d score %d\n", p.getId(), p.get("result"));
+            System.out.printf("\tPlayer %d score %s\n", p.getId(), p.get("result").toString());
             beforeSendOffHook(p);
         }
         for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
-            for (Player<ResultType> p : pair.snd.apply(players)) {
+            for (Player<ResultType> p : pair.snd.apply(players,comp)) {
                 if (pair.fst instanceof Node) {
                     System.out.printf("sending player %d to node %d\n", p.getId(), ((Node<ResultType>)pair.fst).getId());
                 } else if (pair.fst instanceof SubTournament) {

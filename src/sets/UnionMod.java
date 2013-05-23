@@ -10,10 +10,10 @@ public class UnionMod<E> implements SetModifier<E> {
     }
 
     // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set) {
-        SortedSet<E> ret = new TreeSet<E>();
+    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+        SortedSet<E> ret = new TreeSet<E>(comp);
         for (SetModifier<E> mod : mods) {
-            for (E e : mod.apply(set)) {
+            for (E e : mod.apply(set,comp)) {
                 ret.add(e);
             }
         }

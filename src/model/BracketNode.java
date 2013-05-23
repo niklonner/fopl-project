@@ -6,7 +6,7 @@ import java.util.*;
 
  */
 
-public class BracketNode<ResultType extends Comparable<? super ResultType>> extends Node<ResultType> {
+public class BracketNode<ResultType> extends Node<ResultType> {
     private int numPlayers;
     private int advancing;
 
@@ -23,7 +23,7 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
 
     // TODO: Add hook to modifiy players before sending them off
 
-    public static class Builder<ResultType extends Comparable<? super ResultType>>
+    public static class Builder<ResultType>
         extends Node.Builder<BracketNode.Builder<ResultType>,ResultType> {
         protected BracketNode<ResultType> node;
 

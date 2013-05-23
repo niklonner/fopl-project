@@ -1,5 +1,5 @@
 package model;
 
-public interface PlayerReceiver<ResultType extends Comparable<? super ResultType>> {
+public interface PlayerReceiver<ResultType> {
     public void acceptPlayer(Player<ResultType> p);
 }

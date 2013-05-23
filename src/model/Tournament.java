@@ -4,7 +4,7 @@ import java.util.*;
 import sets.*;
 import parse.*;
 
-public class Tournament<ResultType extends Comparable<? super ResultType>> implements Iterable<SubTournament<ResultType>> {
+public class Tournament<ResultType> implements Iterable<SubTournament<ResultType>> {
     public  Map<String,SubTournament<ResultType>> subTournaments;
 
     public Tournament() {

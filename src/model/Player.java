@@ -2,14 +2,14 @@ package model;
 
 import java.util.*;
 
-public class Player<ResultType extends Comparable<? super ResultType>>
+public class Player<ResultType>
     implements Comparable<Player<ResultType>> {
     private static int nextId = 0;
 
     private Integer id; // Object so null will be default value.
     private String name;
     private Map<String, Object> attributes = new HashMap<>();
-
+    private PrettyPrinterScore prettyPrinter;
 
     public Player() {
         this("player " + (nextId));
@@ -19,6 +19,10 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         this.id = nextId++;
         this.setName(name);
         //        attributes.put("result", null);
+    }
+
+    public void setPrettyPrinter(PrettyPrinterScore prettyPrinter) {
+        this.prettyPrinter = prettyPrinter;
     }
 
     public void setName(String name) {
@@ -33,6 +37,10 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         return this.id;
     }
 
+    public String getPrettyPrintScore() {
+        return prettyPrinter == null ? getResult().toString() : prettyPrinter.prettyPrint(this);
+    }
+    
     @SuppressWarnings("unchecked")
         public ResultType setResult(ResultType result) {
         return (ResultType) attributes.put("result", result);
@@ -80,7 +88,7 @@ public class Player<ResultType extends Comparable<? super ResultType>>
         } else if (!otherSet) {
             return -1;
         } else {
-            int res = ((ResultType) getResult()).compareTo((ResultType) other.getResult());
+            int res = ((Comparable) getResult()).compareTo((Comparable) other.getResult());
             return res != 0 ? -res : tiebreaker;
         }
     }

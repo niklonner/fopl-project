@@ -40,6 +40,15 @@ public class ReflectionHelper {
         return underscores + builder.toString();
     }
 
+    public String toClassCamelCase(String name) {
+        String cc = toCamelCase(name);
+        if (cc.length() > 0) {
+            return Character.toUpperCase(cc.charAt(0)) + cc.substring(1);
+        } else {
+            return cc;
+        }
+    }
+
     public Object call(Class type, String name, Object... param) throws NoSuchMethodException {
         return call(type, null, name, Arrays.asList(param));
     }

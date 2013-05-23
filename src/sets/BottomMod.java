@@ -16,9 +16,9 @@ public class BottomMod<E> implements SetModifier<E> {
     }
 
     // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set) {
-        SortedSet<E> ret = new TreeSet<E>();
-        SortedSet<E> s = mod.apply(set);
+    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+        SortedSet<E> ret = new TreeSet<E>(comp);
+        SortedSet<E> s = mod.apply(set,comp);
         Iterator<E> it = s.iterator();
         for (int i=0;i<s.size()-num;i++) {
             it.next();

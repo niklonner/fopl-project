@@ -12,11 +12,11 @@ public class IntersectMod<E> implements SetModifier<E> {
     }
 
     // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set) {
-        SortedSet<E> ret = new TreeSet<E>();
-        for (E e1 : mod1.apply(set)) {
+    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+        SortedSet<E> ret = new TreeSet<E>(comp);
+        for (E e1 : mod1.apply(set,comp)) {
             boolean inOther = false;
-            for (E e2 : mod2.apply(set)) {
+            for (E e2 : mod2.apply(set,comp)) {
                 if (e1.equals(e2)) {
                     inOther = true;
                 }

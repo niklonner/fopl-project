@@ -19,11 +19,24 @@ import java.util.Deque;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Collections;
+import java.util.Comparator;
 
 import java.lang.reflect.*;
 
 public class TournamentParser {
+    private List<String> packages;
 
+    public TournamentParser() {
+        this(java.util.Collections.<String>emptyList());
+    }
+
+    public TournamentParser(List<String> packages) {
+        this.packages = new LinkedList<>(packages);
+        this.packages.add("model");
+    }
+
+                             
+    
     /**
      * For simple command-line testing
      */
@@ -31,7 +44,7 @@ public class TournamentParser {
         System.out.println("\nRunning\n");
         Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(args[0]);
         if(parse_tree != null) {
-            Worker visitor = new Worker();
+            Worker visitor = new Worker(java.util.Arrays.asList("model"));
             parse_tree.accept(visitor);
             for (int i=1;i<args.length;i++) {
                 visitor.superTournament.findSubTournament(args[i]).startBuild();
@@ -42,7 +55,7 @@ public class TournamentParser {
     public void parse(String path) throws ContextException {
         try {
             Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
-            Worker visitor = new Worker();
+            Worker visitor = new Worker(packages);
             if(parse_tree != null) {
                 parse_tree.accept(visitor);
                 visitor.subTournaments.get(0).startBuild();
@@ -53,10 +66,27 @@ public class TournamentParser {
         }
     }
 
+    public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp) throws ContextException {
+        Swag.Absyn.Prog parse_tree;
+        try {
+            parse_tree = BasicParser.parseTournamentFile(path);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        Worker visitor = new Worker(packages);
+        visitor.setComparator(cmp);
+        visitor.setRandomGenerator(rnd);
+        if(parse_tree != null) {
+            parse_tree.accept(visitor);
+            return (Tournament) visitor.superTournament;
+        }
+        return null;
+    }
+    
     public List<model.SubTournament<?>> parseString(String sourceCode) throws ContextException {
         List<model.SubTournament<?>> subt;
         Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentString(sourceCode);
-        Worker visitor = new Worker();
+        Worker visitor = new Worker(packages);
         if(parse_tree != null) {
             parse_tree.accept(visitor);
             /*subt =*/ visitor.subTournaments.get(0).startBuild();
@@ -99,13 +129,29 @@ public class TournamentParser {
 
         Tournament<Integer> superTournament = new Tournament<>();
             
-        
         model.SubTournament.Builder<?,Integer> builder;
         int nrParam;
         int nrUnionParam;
 
         ReflectionHelper rh = new ReflectionHelper();
 
+        Comparator comp;
+        RandomGenerator rnd;
+
+        List<String> packages;
+
+        public Worker(List<String> packages) {
+            this.packages = packages;
+        }
+        
+        public void setComparator(Comparator cmp) {
+            comp = cmp;
+        }
+
+        public void setRandomGenerator(RandomGenerator rnd) {
+            this.rnd = rnd;
+        }
+        
         public void visitProg(Swag.Absyn.Prog prog) {} //abstract class
         public void visitProgram(Swag.Absyn.Program program) {
             /* Code For Program Goes Here */
@@ -127,28 +173,35 @@ public class TournamentParser {
             System.out.println("Making tournament: " + subtournament.string_);
             //subt = new SubTournament(subtournament.string_);
 
-            StringBuilder clazz = new StringBuilder();
-            clazz.append("model.");
-            clazz.append(Character.toUpperCase(subtournament.ident_.charAt(0)));
-            clazz.append(subtournament.ident_.substring(1).toLowerCase());
-            clazz.append("$Builder");
+            boolean success = false;
+            
+            for (String pkg : packages) {
+                StringBuilder clazz = new StringBuilder();
+                clazz.append(pkg);
+                clazz.append(".");
+                clazz.append(rh.toClassCamelCase(subtournament.ident_));
+                clazz.append("$Builder");
 
-            try {
-                builder = (model.SubTournament.Builder<?,Integer>)Class.forName(clazz.toString()).newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                try {
+                    builder = (model.SubTournament.Builder<?,Integer>)Class.forName(clazz.toString()).newInstance();
+                    success = true;
+                    break;
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                }
+            }
+            if (!success) {
                 System.err.println("Unrecognizable subtournament type \"" +
                                    subtournament.ident_ + "\".");
                 System.exit(1);
             }
-            
-            /*                        switch (subtournament.ident_) {
-                                      case "bracket":
-                                      builder = new Bracket.Builder<Integer>();
-                                      break;
-                                      default:
-                                      }*/
 
+            if (comp != null) {
+                builder.setComparator(comp);
+            }
+            if (rnd != null) {
+                builder.setRandomGenerator(rnd);
+            }
+            
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
 
             builder.setTournament(superTournament);

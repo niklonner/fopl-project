@@ -12,9 +12,9 @@ public class NotIntersectMod<E> implements SetModifier<E> {
     }
 
     // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set) {
-        SortedSet<E> intersect = new IntersectMod<E>(mod1,mod2).apply(set);
-        SortedSet<E> ret = new TreeSet<E>();
+    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+        SortedSet<E> intersect = new IntersectMod<E>(mod1,mod2).apply(set,comp);
+        SortedSet<E> ret = new TreeSet<E>(comp);
         for (E e : set) {
             if (!intersect.contains(e)) {
                 ret.add(e);

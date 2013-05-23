@@ -5,7 +5,7 @@ import util.*;
 import sets.*;
 import parse.*;
 
-public abstract class SubTournament<ResultType extends Comparable<? super ResultType>>
+public abstract class SubTournament<ResultType>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {
     private static int nextId = 0;
     private int id;
@@ -14,6 +14,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
     protected List<Node<ResultType>> nodes = new ArrayList<>();
     protected List<Observer> observers = new ArrayList<>();
     protected Comparator<Player<ResultType>> comp;
+    protected RandomGenerator<ResultType> rnd;
     protected Tournament tournament;
 
     // only for use by subclasses
@@ -38,6 +39,10 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
         } else {
             players = builder.subTournament.players;
         }
+        rnd = builder.subTournament.rnd;
+        if (rnd == null) {
+            rnd = (RandomGenerator)new RndDefault();
+        }
         observers = builder.subTournament.observers;
         for (Observer o : observers) {
             addObserver(o);
@@ -52,7 +57,7 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
         }
     }
 
-    public static abstract class Builder<T extends Builder<T,ResultType>, ResultType extends Comparable<? super ResultType>> {
+    public static abstract class Builder<T extends Builder<T,ResultType>, ResultType> {
         protected SubTournament<ResultType> subTournament;
         protected String playerSource;
 
@@ -90,6 +95,11 @@ public abstract class SubTournament<ResultType extends Comparable<? super Result
 
         public T setComparator(Comparator<Player<ResultType>> comp) {
             subTournament.comp = comp;
+            return me();
+        }
+
+        public T setRandomGenerator(RandomGenerator<ResultType> rnd) {
+            subTournament.rnd = rnd;
             return me();
         }
 

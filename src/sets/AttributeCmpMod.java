@@ -16,9 +16,9 @@ public class AttributeCmpMod<E> implements SetModifier<E> {
     }
 
     // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set) {
-        SortedSet<E> ret = new TreeSet<E>();
-        for (E e : mod.apply(set)) {
+    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+        SortedSet<E> ret = new TreeSet<E>(comp);
+        for (E e : mod.apply(set,comp)) {
             if (op.apply(((Number)((model.Player<?>)e).get(str)),value)) {
                 ret.add(e);
             }

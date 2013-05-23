@@ -13,9 +13,7 @@ import parse.*;
 // sendlosersto
 // sendtopernode
 
-public class Bracket<ResultType extends Comparable<? super ResultType>> extends SubTournament<ResultType> {
-    private static Random rnd = new Random();
-    
+public class Bracket<ResultType> extends SubTournament<ResultType> {
     private int groupBy;
     private int advancing;
     private int playUntil;
@@ -43,7 +41,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         resetLevels = builder.subTournament.resetLevels;
     }
 
-    public static class Builder<ResultType extends Comparable<? super ResultType>>
+    public static class Builder<ResultType>
         extends SubTournament.Builder<Bracket.Builder<ResultType>, ResultType> {
         protected Bracket<ResultType> subTournament;
 
@@ -60,7 +58,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             return this;
         }
 
-        public SubTournament<ResultType> getSubTournament() {
+        public Bracket<ResultType> getSubTournament() {
             return new Bracket<>(this);
         }
 
@@ -78,6 +76,16 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             subTournament.groupBy = (int)groupBy;
             return this;
         }
+
+        public Builder<ResultType> groupBy(String keyword) {
+            if (keyword.equals("all")) {
+                subTournament.groupBy = Integer.MAX_VALUE;
+            } else {
+                throw new UnsupportedOperationException("expected keyword, got " + keyword);
+            }
+            return this;
+        }
+
         
         public Builder<ResultType> playUntil(int playUntil) {
             subTournament.playUntil = playUntil;
@@ -171,13 +179,12 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             prevLayer = bnl;
         }
         // now randomize results
-        // hard-coded to use Integer result type
         for (BracketNodeLayer bnl : nodeLayers) {
             for (BracketNode<ResultType> n : bnl.nodes) {
                 for (Player<ResultType> p : n.getPlayers()) {
                     //                    System.out.println(n.getId());
                     //                    System.out.println(n.getPlayers());
-                    ((BracketNode<Integer>)n).addResult(p.getId(),rnd.nextInt(100));
+                    n.addResult(p.getId(),rnd.next());
                 }
             }
         }
@@ -195,9 +202,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     }
 
     public void receiveHook(Player<ResultType> p) {
-        System.out.println("rhook");
         if (resetLevels) {
-            System.out.println("resetting");
             p.set("level",0);
         }
     }
@@ -213,6 +218,14 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             }
         }
 
+        public FinalLayerNode() {
+            super();
+            if (Bracket.this.comp != null) {
+                players = new TreeSet<>(Bracket.this.comp);
+                comp = Bracket.this.comp;
+            }
+        }
+        
         public void beforeSendOffHook(Player<ResultType> p) {
             
         }
@@ -233,7 +246,6 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         int numPlayers;
         
         BracketNodeLayer(int numNodes, int numPlayers) {
-            System.out.printf("building, numNodes=%d, numPlayers=%d\n", numNodes, numPlayers);
             advancingMod = new TopMod<Player<ResultType>>(advancing);
             int leftOverPlayers = numPlayers%numNodes;
             advancingPlayers = numPlayers/groupBy * advancing + (leftOverPlayers == 0 ? 0 : Math.min(leftOverPlayers,advancing));
@@ -248,7 +260,7 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                     builder.setAdvancing(advancing);
                 }
                 builder.setObservers(observers);
-                // set comparator
+                builder.setComparator(comp);
                 BracketNode<ResultType> newNode = new BracketNode<ResultType>(builder);
                 nodes.add(newNode);
                 Bracket.this.nodes.add(newNode);
@@ -284,6 +296,12 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
                     bn.addReceiver(tournament.findSubTournament(p.fst),p.snd);
                 }
             }
+        }
+    }
+
+    public void addObserver(Observer o) {
+        for (Node<ResultType> n : nodes) {
+            n.addObserver(o);
         }
     }
 }

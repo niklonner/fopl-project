@@ -8,7 +8,9 @@ TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
 #main targets
 all: BasicParser util/ContextException.class parse/TournamentParser.class parse/PlayerParser.class \
 	model/Node.class model/Tournament.class model/SubTournament.class model/Bracket.class \
-	model/BracketNode.class model/Player.class sets/BottomMod.class sets/IdentityMod.class \
+	model/BracketNode.class model/Player.class \
+	model/RndDefault.class \
+	sets/BottomMod.class sets/IdentityMod.class \
 	sets/SetModifier.class sets/TopMod.class \
     sets/AttributeCmpMod.class sets/HasAttributeMod.class \
     sets/IntersectMod.class sets/NotIntersectMod.class \
@@ -75,6 +77,9 @@ model/BracketNode.class: model/BracketNode.java
 model/Player.class: model/Player.java
 	javac -cp $(CP) model/Player.java
 
+model/RndDefault.class: model/RndDefault.java
+	javac -cp $(CP) model/RndDefault.java
+	
 #parse
 parse/TournamentParser.class: parse/TournamentParser.java
 	javac -cp $(CP) parse/TournamentParser.java
@@ -149,11 +154,20 @@ test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 	javac -cp $(CP):$(TEST) ../test/util/ReflectionHelperTest.java
 
 #bwlag
-bwlag: bwlag/model/CmpStandard.class
+bwlag: bwlag/model/CmpStandard.class bwlag/model/RndStandard.class \
+	bwlag/parse/BwlagParser.class bwlag/model/OpenPlay.class
 
 bwlag/model/CmpStandard.class: bwlag/model/CmpStandard.java
 	javac -cp $(CP) bwlag/model/CmpStandard.java
 
+bwlag/model/RndStandard.class: bwlag/model/RndStandard.java
+	javac -cp $(CP) bwlag/model/RndStandard.java
+
+bwlag/model/OpenPlay.class: bwlag/model/OpenPlay.java
+	javac -cp $(CP) bwlag/model/OpenPlay.java
+
+bwlag/parse/BwlagParser.class: bwlag/parse/BwlagParser.java
+	javac -cp $(CP) bwlag/parse/BwlagParser.java
 #clean
 clean:
 	rm $(SWAGDIR)/Swag/BasicParser.*
