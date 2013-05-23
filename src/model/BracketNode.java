@@ -69,14 +69,24 @@ public class BracketNode<ResultType extends Comparable<? super ResultType>> exte
         }
     }
 
-    public void sendOffHook(Player<ResultType> player) {
+    public void beforeSendOffHook(Player<ResultType> player) {
+        if (rank(player) > advancing) {
+            if (player.attributeIsSet("losses")) {
+                player.set("losses",((int)player.get("losses"))+1);
+            } else {
+                player.set("losses",1);
+            }
+        }
+    }
+
+    public void afterSendOffHook(Player<ResultType> player) {
         if (rank(player) <= advancing) {
             if (player.attributeIsSet("level")) {
                 player.set("level",((int)player.get("level"))+1);
             } else {
                 player.set("level",1);
             }
-        }
+        } 
     }
 
     private boolean allResultsSet() {

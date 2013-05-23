@@ -112,6 +112,9 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
         }
         // build first level
         int numPlayers = numPlayersWithLevel(0);
+        for (Player<?> p : players) {
+            System.out.println(p.get("level"));
+        }
         int numNodes = (int)Math.ceil((double)numPlayers/groupBy);
         BracketNodeLayer previousLayer = new BracketNodeLayer(numNodes,numPlayers);
         nodeLayers.add(previousLayer);
@@ -192,7 +195,9 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
     }
 
     public void receiveHook(Player<ResultType> p) {
+        System.out.println("rhook");
         if (resetLevels) {
+            System.out.println("resetting");
             p.set("level",0);
         }
     }
@@ -208,7 +213,11 @@ public class Bracket<ResultType extends Comparable<? super ResultType>> extends 
             }
         }
 
-        public void sendOffHook(Player<ResultType> p) {
+        public void beforeSendOffHook(Player<ResultType> p) {
+            
+        }
+        
+        public void afterSendOffHook(Player<ResultType> p) {
             
         }
         

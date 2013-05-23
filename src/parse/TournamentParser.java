@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -60,7 +61,7 @@ public class TournamentParser {
             parse_tree.accept(visitor);
             /*subt =*/ visitor.subTournaments.get(0).startBuild();
         }
-//        return visitor.subTournaments;
+        //        return visitor.subTournaments;
         return null;
     }
 
@@ -101,6 +102,7 @@ public class TournamentParser {
         
         model.SubTournament.Builder<?,Integer> builder;
         int nrParam;
+        int nrUnionParam;
 
         ReflectionHelper rh = new ReflectionHelper();
 
@@ -192,6 +194,7 @@ public class TournamentParser {
         public void visitListExp(Swag.Absyn.ListExp listexp) {
             while(listexp!= null) {
                 nrParam++;
+                nrUnionParam++;
                 listexp.exp_.accept(this);
                 listexp = listexp.listexp_;
             }
@@ -201,7 +204,16 @@ public class TournamentParser {
         {
             /* Code For Eunion Goes Here */
 
+            nrUnionParam = 0;
+            
             if (eunion.listexp_ != null) {eunion.listexp_.accept(this);}
+            
+            List<Object> os = pop(nrUnionParam, stack);
+            List<SetModifier<Player<?>>> ss = new LinkedList<>();
+            for (Object o : os) {
+                ss.add(setModifierReplaceKeywords(o));
+            }
+            SetModifier<Player<?>> sm = new UnionMod<>(ss);
         }
         public void visitEeq(Swag.Absyn.Eeq eeq)
         {
@@ -339,8 +351,41 @@ public class TournamentParser {
 
             efol.exp_.accept(this);
             visitIdent(efol.ident_);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+            if (y instanceof String) {
+                SetModifier<Player<?>> sm =  new HasAttributeMod<Player<?>>((String)y,setModifierReplaceKeywords(x));
+                stack.push(sm);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+            
         }
 
+
+        public void visitEfolcmp(Swag.Absyn.Efolcmp efolcmp)
+        {
+            /* Code For Efolcmp Goes Here */
+
+            efolcmp.exp_1.accept(this);
+            visitIdent(efolcmp.ident_);
+            efolcmp.cmpop_.accept(this);
+            efolcmp.exp_2.accept(this);
+
+            Object w = stack.pop();
+            Object z = stack.pop();
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            if (y instanceof String && w instanceof Number) {
+                SetModifier<Player<?>> sm =  new AttributeCmpMod<Player<?>>((String)y, (Operator) z, ((Number)w).doubleValue(),setModifierReplaceKeywords(x));
+                stack.push(sm);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+        
         public void visitEintersect(Swag.Absyn.Eintersect eintersect)
         {
             /* Code For Eintersect Goes Here */
@@ -381,6 +426,8 @@ public class TournamentParser {
             if (x instanceof Integer) {
                 SetModifier<Player<?>> sm =  new TopMod<Player<?>>((int)x,setModifierReplaceKeywords(y));
                 stack.push(sm);
+            } else {
+                throw new UnsupportedOperationException();
             }
         }
         
@@ -395,6 +442,8 @@ public class TournamentParser {
             if (x instanceof Integer) {
                 SetModifier<Player<?>> sm =  new BottomMod<Player<?>>((int)x,setModifierReplaceKeywords(y));
                 stack.push(sm);
+            } else {
+                throw new UnsupportedOperationException();                
             }
         }
         
@@ -428,6 +477,38 @@ public class TournamentParser {
             stack.push(s);
         }
 
+        public void visitCmpOp(Swag.Absyn.CmpOp cmpop) {} //abstract class
+        public void visitCOeq(Swag.Absyn.COeq coplus)
+        {
+            /* Code For COplus Goes Here */
+            stack.push(new EqOp());
+
+        }
+        public void visitCOlt(Swag.Absyn.COlt colt)
+        {
+            /* Code For COlt Goes Here */
+            stack.push(new LtOp());
+
+        }
+        public void visitCOle(Swag.Absyn.COle cole)
+        {
+            /* Code For COle Goes Here */
+            stack.push(new LeOp());
+
+        }
+        public void visitCOgt(Swag.Absyn.COgt cogt)
+        {
+            /* Code For COgt Goes Here */
+            stack.push(new GtOp());
+
+        }
+        public void visitCOge(Swag.Absyn.COge coge)
+        {
+            /* Code For COge Goes Here */
+            stack.push(new GeOp());
+
+        }
+        
         /**
          * Retrieves a number of objects from the stack as an Array.
          */
@@ -448,7 +529,7 @@ public class TournamentParser {
             } else if(o instanceof String && ((String)o).equalsIgnoreCase("all")) {
                 return new IdentityMod<>();
             }
-            throw new IllegalArgumentException("set modifier expected");
+            throw new UnsupportedOperationException("set modifier expected");
         }
     }
 }

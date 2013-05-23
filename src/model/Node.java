@@ -126,6 +126,7 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
         System.out.printf("node %d sending players off\n",getId());
         for (Player<ResultType> p : players) {
             System.out.printf("\tPlayer %d score %d\n", p.getId(), p.get("result"));
+            beforeSendOffHook(p);
         }
         for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
             for (Player<ResultType> p : pair.snd.apply(players)) {
@@ -134,13 +135,14 @@ public abstract class Node<ResultType extends Comparable<? super ResultType>> ex
                 } else if (pair.fst instanceof SubTournament) {
                     System.out.printf("sending player %d to subtournament %d\n", p.getId(), ((SubTournament<ResultType>)pair.fst).getId());
                 }
-                sendOffHook(p);
+                afterSendOffHook(p);
                 pair.fst.acceptPlayer(p);
             }
         }
     }
 
-    public abstract void sendOffHook(Player<ResultType> p);
+    public abstract void beforeSendOffHook(Player<ResultType> p);
+    public abstract void afterSendOffHook(Player<ResultType> p);
 
     public int rank(Player<ResultType> player) {
         int i=0;

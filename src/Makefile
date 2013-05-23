@@ -9,7 +9,13 @@ TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
 all: BasicParser util/ContextException.class parse/TournamentParser.class parse/PlayerParser.class \
 	model/Node.class model/Tournament.class model/SubTournament.class model/Bracket.class \
 	model/BracketNode.class model/Player.class sets/BottomMod.class sets/IdentityMod.class \
-	sets/SetModifier.class sets/TopMod.class util/ContextException.class util/ReflectionHelper.class \
+	sets/SetModifier.class sets/TopMod.class \
+    sets/AttributeCmpMod.class sets/HasAttributeMod.class \
+    sets/IntersectMod.class sets/NotIntersectMod.class \
+    sets/UnionMod.class \
+    sets/Operator.class sets/EqOp.class sets/LtOp.class \
+    sets/LeOp.class sets/GtOp.class sets/GeOp.class \
+	util/ContextException.class util/ReflectionHelper.class \
 	util/Pair.class viewer/DisplayPanel.class viewer/Viewer.class viewer/CodeArea.class viewer/Main.class
 
 run: all
@@ -87,6 +93,39 @@ sets/SetModifier.class: sets/SetModifier.java
 
 sets/TopMod.class: sets/TopMod.java
 	javac -cp $(CP) sets/TopMod.java
+
+sets/AttributeCmpMod.class: sets/AttributeCmpMod.java
+	javac -cp $(CP) sets/AttributeCmpMod.java
+
+sets/HasAttributeMod.class: sets/HasAttributeMod.java
+	javac -cp $(CP) sets/HasAttributeMod.java
+
+sets/IntersectMod.class: sets/IntersectMod.java
+	javac -cp $(CP) sets/IntersectMod.java
+
+sets/NotIntersectMod.class: sets/NotIntersectMod.java
+	javac -cp $(CP) sets/NotIntersectMod.java
+
+sets/UnionMod.class: sets/UnionMod.java
+	javac -cp $(CP) sets/UnionMod.java
+
+sets/Operator.class: sets/Operator.java
+	javac -cp $(CP) sets/Operator.java
+
+sets/EqOp.class: sets/EqOp.java
+	javac -cp $(CP) sets/EqOp.java
+	
+sets/LtOp.class: sets/LtOp.java
+	javac -cp $(CP) sets/LtOp.java
+	
+sets/LeOp.class: sets/LeOp.java
+	javac -cp $(CP) sets/LeOp.java
+	
+sets/GtOp.class: sets/GtOp.java
+	javac -cp $(CP) sets/GtOp.java
+	
+sets/GeOp.class: sets/GeOp.java
+	javac -cp $(CP) sets/EqOp.java
 
 #util
 util/ContextException.class: util/ContextException.java
