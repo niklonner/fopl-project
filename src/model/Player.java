@@ -9,7 +9,7 @@ public class Player<ResultType>
     private Integer id; // Object so null will be default value.
     private String name;
     private Map<String, Object> attributes = new HashMap<>();
-    private PrettyPrinterScore prettyPrinter;
+    private PrettyPrinterScore<ResultType> prettyPrinter;
 
     public Player() {
         this("player " + (nextId));
@@ -21,7 +21,7 @@ public class Player<ResultType>
         //        attributes.put("result", null);
     }
 
-    public void setPrettyPrinter(PrettyPrinterScore prettyPrinter) {
+    public void setPrettyPrinter(PrettyPrinterScore<ResultType> prettyPrinter) {
         this.prettyPrinter = prettyPrinter;
     }
 
@@ -33,12 +33,16 @@ public class Player<ResultType>
         return name;
     }
 
+    public String toString() {
+        return getPrettyPrintScore();
+    }
+    
     public Integer getId() {
         return this.id;
     }
 
     public String getPrettyPrintScore() {
-        return prettyPrinter == null ? getResult().toString() : prettyPrinter.prettyPrint(this);
+        return prettyPrinter == null ? "player " + getId() + " " + " score " + getResult().toString() : prettyPrinter.prettyPrint(this);
     }
     
     @SuppressWarnings("unchecked")

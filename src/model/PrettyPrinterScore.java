@@ -1,5 +1,5 @@
 package model;
 
-public interface PrettyPrinterScore {
-    public String prettyPrint(Player p);
+public interface PrettyPrinterScore<ResultType> {
+    public String prettyPrint(Player<ResultType> p);
 }

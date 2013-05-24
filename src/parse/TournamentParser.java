@@ -66,7 +66,7 @@ public class TournamentParser {
         }
     }
 
-    public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp) throws ContextException {
+    public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp, PrettyPrinterScore<T> pps) throws ContextException {
         Swag.Absyn.Prog parse_tree;
         try {
             parse_tree = BasicParser.parseTournamentFile(path);
@@ -76,6 +76,7 @@ public class TournamentParser {
         Worker visitor = new Worker(packages);
         visitor.setComparator(cmp);
         visitor.setRandomGenerator(rnd);
+        visitor.setPrettyPrinter(pps);
         if(parse_tree != null) {
             parse_tree.accept(visitor);
             return (Tournament) visitor.superTournament;
@@ -137,6 +138,7 @@ public class TournamentParser {
 
         Comparator comp;
         RandomGenerator rnd;
+        PrettyPrinterScore pps;
 
         List<String> packages;
 
@@ -150,6 +152,10 @@ public class TournamentParser {
 
         public void setRandomGenerator(RandomGenerator rnd) {
             this.rnd = rnd;
+        }
+
+        public void setPrettyPrinter(PrettyPrinterScore pps) {
+            this.pps = pps;
         }
         
         public void visitProg(Swag.Absyn.Prog prog) {} //abstract class
@@ -200,6 +206,9 @@ public class TournamentParser {
             }
             if (rnd != null) {
                 builder.setRandomGenerator(rnd);
+            }
+            if (pps != null) {
+                builder.setPrettyPrinter(pps);
             }
             
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}

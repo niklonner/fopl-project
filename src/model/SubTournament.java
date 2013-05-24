@@ -16,6 +16,7 @@ public abstract class SubTournament<ResultType>
     protected Comparator<Player<ResultType>> comp;
     protected RandomGenerator<ResultType> rnd;
     protected Tournament tournament;
+    protected PrettyPrinterScore<ResultType> pps;
 
     // only for use by subclasses
     protected SubTournament() {
@@ -48,11 +49,15 @@ public abstract class SubTournament<ResultType>
             addObserver(o);
         }
         tournament = builder.subTournament.tournament;
+        pps = builder.subTournament.pps;
         if (builder.playerSource != null) {
             PlayerParser pp = new PlayerParser();
             List<Player> players = (List<Player>) pp.parse(builder.playerSource);
             for (Player p : players) {
                 acceptPlayer((Player<ResultType>) p);
+                if (pps != null) {
+                    p.setPrettyPrinter(pps);
+                }
             }
         }
     }
@@ -93,6 +98,11 @@ public abstract class SubTournament<ResultType>
             return me();
         }
 
+        public T setPrettyPrinter(PrettyPrinterScore<ResultType> pps) {
+            subTournament.pps = pps;
+            return me();
+        }
+        
         public T setComparator(Comparator<Player<ResultType>> comp) {
             subTournament.comp = comp;
             return me();

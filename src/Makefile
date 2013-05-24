@@ -155,7 +155,8 @@ test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 
 #bwlag
 bwlag: bwlag/model/CmpStandard.class bwlag/model/RndStandard.class \
-	bwlag/parse/BwlagParser.class bwlag/model/OpenPlay.class
+	bwlag/parse/BwlagParser.class bwlag/model/OpenPlay.class \
+	bwlag/model/PPSStandard.class
 
 bwlag/model/CmpStandard.class: bwlag/model/CmpStandard.java
 	javac -cp $(CP) bwlag/model/CmpStandard.java
@@ -166,8 +167,13 @@ bwlag/model/RndStandard.class: bwlag/model/RndStandard.java
 bwlag/model/OpenPlay.class: bwlag/model/OpenPlay.java
 	javac -cp $(CP) bwlag/model/OpenPlay.java
 
+bwlag/model/PPSStandard.class: bwlag/model/PPSStandard.java
+	javac -cp $(CP) bwlag/model/PPSStandard.java
+
 bwlag/parse/BwlagParser.class: bwlag/parse/BwlagParser.java
 	javac -cp $(CP) bwlag/parse/BwlagParser.java
+
+	
 #clean
 clean:
 	rm $(SWAGDIR)/Swag/BasicParser.*

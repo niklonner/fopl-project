@@ -92,11 +92,30 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
             return this;
         }
 
+        public Builder<ResultType> playUntil(String keyword) {
+            if (keyword.equals("all")) {
+                subTournament.playUntil = Integer.MAX_VALUE;
+            } else {
+                throw new UnsupportedOperationException("expected keyword, got " + keyword);
+            }
+            return this;
+        }
+
         public Builder<ResultType> advance(int advancing) {
             subTournament.advancing = advancing;
             return this;
         }
 
+        public Builder<ResultType> advance(String keyword) {
+            if (keyword.equals("all")) {
+                subTournament.advancing = Integer.MAX_VALUE;
+            } else {
+                throw new UnsupportedOperationException("expected keyword, got " + keyword);
+            }
+            return this;
+        }
+
+        
         public Builder<ResultType> sendLosersTo(String receiver) {
             return sendToPerNode(receiver,new BottomMod<Player<ResultType>>(subTournament.groupBy-subTournament.advancing, new IdentityMod<Player<ResultType>>()));
         }
@@ -120,9 +139,9 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         }
         // build first level
         int numPlayers = numPlayersWithLevel(0);
-        for (Player<?> p : players) {
+        /*        for (Player<?> p : players) {
             System.out.println(p.get("level"));
-        }
+            }*/
         int numNodes = (int)Math.ceil((double)numPlayers/groupBy);
         BracketNodeLayer previousLayer = new BracketNodeLayer(numNodes,numPlayers);
         nodeLayers.add(previousLayer);
@@ -132,7 +151,7 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         numPlayers = numPlayersWithLevel(level) + previousLayer.getAdvancing();
         while (numPlayers > playUntil) {
             numNodes = (int)Math.ceil((double)numPlayers/groupBy);
-            System.out.println(numPlayers);
+            //            System.out.println(numPlayers);
             BracketNodeLayer layer = new BracketNodeLayer(numNodes,numPlayers);
             previousLayer.connectWith(layer);
             nodeLayers.add(layer);
@@ -213,7 +232,7 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
 
         public void acceptPlayer(Player<ResultType> p) {
             super.acceptPlayer(p);
-            if (players.size() == playUntil) {
+            if (players.size() == playUntil || Bracket.this.players.size() == players.size()) {
                 sendPlayersOff();
             }
         }

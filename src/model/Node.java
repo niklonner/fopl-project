@@ -130,7 +130,7 @@ public abstract class Node<ResultType> extends Observable
     protected void sendPlayersOff() {
         System.out.printf("node %d sending players off\n",getId());
         for (Player<ResultType> p : players) {
-            System.out.printf("\tPlayer %d score %s\n", p.getId(), p.get("result").toString());
+            System.out.println("\t" + p);
             beforeSendOffHook(p);
         }
         for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
@@ -144,6 +144,7 @@ public abstract class Node<ResultType> extends Observable
                 pair.fst.acceptPlayer(p);
             }
         }
+        System.out.println();
     }
 
     public abstract void beforeSendOffHook(Player<ResultType> p);

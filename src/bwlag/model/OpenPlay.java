@@ -40,8 +40,8 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
             op = new OpenPlay();
             bb = new Bracket.Builder<>();
             bb.groupBy("all");
-            bb.advance(Integer.MAX_VALUE);
-            bb.playUntil(Integer.MAX_VALUE);
+            bb.advance("all");
+            bb.playUntil("all");
             return op;
         }
 
@@ -60,6 +60,16 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
         public Builder<ResultType> setRandomGenerator(RandomGenerator<ResultType> rnd) {
             super.setRandomGenerator(rnd);
             bb.setRandomGenerator(rnd);
+            return this;
+        }
+
+        public Builder<ResultType> setTournament(Tournament tournament) {
+            bb.setTournament(tournament);
+            return this;
+        }
+
+        public Builder<ResultType> playUntil(int playUntil) {
+            bb.playUntil(playUntil);
             return this;
         }
         

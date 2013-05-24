@@ -16,6 +16,6 @@ public class BwlagParser {
     }
     
     public static Tournament<List<Integer>> parse(String path) throws util.ContextException {
-        return parser.<List<Integer>>parse(path, new RndStandard(), new CmpStandard());
+        return parser.<List<Integer>>parse(path, new RndStandard(), new CmpStandard(), new PPSStandard());
     }
 }

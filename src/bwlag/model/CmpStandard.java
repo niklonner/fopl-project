@@ -10,9 +10,9 @@ public class CmpStandard implements Comparator<Player<List<Integer>>>{
         boolean p2set = p2.resultIsSet();
         int tiebreaker = p1.getId() - p2.getId();
         if (!p1set) {
-            return p2set ? -1 : tiebreaker;
+            return p2set ? 1 : tiebreaker;
         } else if (!p2set) {
-            return p1set ? 1 : tiebreaker;
+            return p1set ? -1 : tiebreaker;
         } else {
             int score1 = 0;
             if (p1set) {
@@ -27,7 +27,7 @@ public class CmpStandard implements Comparator<Player<List<Integer>>>{
                 }
             }
             int res = score1-score2;
-            return res != 0 ? res : tiebreaker;
+            return res != 0 ? -res : tiebreaker;
         }
     }
     
