@@ -1,0 +1,11 @@
+"open" : open_play {
+    player_source: "../example/players";
+    send_to: "final", top 8 all;
+}
+
+"final" : bracket {
+    reset_levels;
+    group_by: 2;
+    play_until: 1;
+    advance: 1;
+}

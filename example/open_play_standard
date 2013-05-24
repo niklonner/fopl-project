@@ -1,0 +1,14 @@
+"open" : bracket {
+    player_source: "../example/players";
+    group_by: all;
+    advance: all;
+    play_until: all;
+    send_to: "final", top 8 all;
+}
+
+"final" : bracket {
+    reset_levels;
+    group_by: 2;
+    play_until: 1;
+    advance: 1;
+}
