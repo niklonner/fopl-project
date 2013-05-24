@@ -18,6 +18,8 @@ public abstract class SubTournament<ResultType>
     protected Tournament tournament;
     protected PrettyPrinterScore<ResultType> pps;
 
+    public abstract void draw(SVGGraphics2D g);
+
     // only for use by subclasses
     protected SubTournament() {
         //      this("subtournament " + nextId);
@@ -80,7 +82,7 @@ public abstract class SubTournament<ResultType>
             }
             return me();
         }
-        
+
         public T setObservers(List<Observer> observers) {
             if (observers != null) {
                 subTournament.observers = new ArrayList<>(observers);
@@ -115,7 +117,7 @@ public abstract class SubTournament<ResultType>
 
         
     }
-    
+
     public Iterator<Node<ResultType>> iterator() {
         return nodes.iterator(); // TODO: implement topological sort
     }

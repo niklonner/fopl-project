@@ -74,11 +74,8 @@ public class DisplayPanel extends JPanel {
     }
 
     private void draw(SVGGraphics2D g, List<SubTournament<?>> subts) {
-        Shape box = new Rectangle2D.Double(0,0,50,50);
         for(SubTournament subt : subts) {
-            g.setPaint(Color.white);
-            g.fill(box);
-            g.translate(60, 0);
+            subt.draw(g);
         }
 
         //Shape circle = new Ellipse2D.Double(0, 0, 50, 50);

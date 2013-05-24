@@ -5,6 +5,13 @@ import util.*;
 import sets.*;
 import parse.*;
 
+import java.awt.*;
+import java.awt.geom.*;
+
+import org.apache.batik.swing.*;
+import org.apache.batik.svggen.*;
+
+
 // KEYWORDS
 // sendto
 // groupby
@@ -22,10 +29,18 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
     // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
     private List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
 
-    private List<BracketNodeLayer> nodeLayers = new ArrayList<>();
+    private int groupBy;
+    private int advancing;
+    private int playUntil;
+    private boolean resetLevels;
+    private List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
+    // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
+    private List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
+
+    private java.util.List<BracketNodeLayer> nodeLayers = new ArrayList<>();
     private FinalLayerNode finalLayer;
     private boolean built = false;
-    
+
     // only for use by Builder
     private Bracket() {
         super();
@@ -226,6 +241,87 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         }
     }
     
+    private int xSpacing = 60;
+    private int ySpacing = 60;
+    private Map<Node, Pair<Double, Integer>> parentPos = new HashMap<>();
+    public void  draw(SVGGraphics2D g) {
+
+        BracketNodeLayer firstLayer = nodeLayers.get(0);
+
+        int firstTrans = 0;
+        for(int i = 0; i < firstLayer.nodes.size(); i++) {
+            Node node = firstLayer.nodes.get(i);
+
+            updateParentNodesPosistions(node, i*xSpacing);
+
+            // Draw players
+            Set<Player<?>> players = node.getPlayers();
+            //for(int j = 1; j <= players.size(); j++) {
+            for(int j = 0; j < 2; j++) {
+                Shape circle = new Ellipse2D.Double(i*xSpacing + 10, j * 35, 30, 30);
+                g.setPaint(Color.red);
+                g.fill(circle);
+            }
+
+            // Draw node
+            g.setPaint(Color.white);
+            //Shape box = new Rectangle2D.Double(i*xSpacing, 20 + players.size()*40,50,50);
+            Shape box = new Rectangle2D.Double(i*xSpacing, 2*35,50,50);
+            g.fill(box);
+
+            //firstTrans = players.size() * 35;
+            firstTrans = 2 * 35;
+        }
+
+        g.translate(0, firstTrans);
+
+        for(int i = 1; i < nodeLayers.size(); i++) {
+            g.translate(0, ySpacing);
+            //g.transform(AffineTransform.getTranslateInstance(0, ySpacing));
+            //g.rotate(0.5);
+            BracketNodeLayer layer = nodeLayers.get(i);
+
+            for(int j = 0; j < layer.nodes.size(); j++) {
+                Node node = layer.nodes.get(j);
+
+                int xPos = parentPos.get(node).fst.intValue();
+                updateParentNodesPosistions(node, xPos);
+
+
+                g.setPaint(Color.white);
+                Shape box = new Rectangle2D.Double(xPos, 0,50,50);
+                g.fill(box);
+
+            }
+        }
+
+        //for(int l = 1; l < nodeLayers.size(); l++) {
+            //BracketNodeLayer layer = nodeLayers.get(l);
+
+            //for(int n = 0; n < layer.size(); n++) {
+            //
+        //}
+    }
+
+    private void updateParentNodesPosistions(Node node, double xPos) {
+            java.util.List<PlayerReceiver<?>> receivers = node.getReceivers();
+            // Set parentPos
+            for(PlayerReceiver<?> receiver : receivers) {
+                if(receiver instanceof Node) {
+                    Node n = (Node) receiver;
+                    Pair<Double, Integer> p = parentPos.get(n);
+                    if(p == null) {
+                        parentPos.put(n, new Pair(xPos, 1));
+                    } else {
+                        double fst = p.fst * p.snd.doubleValue();
+                        fst += xPos;
+                        int snd = p.snd + 1;
+                        parentPos.put(n, new Pair(fst/snd, snd));
+                    }
+                }
+            }
+    }
+
     // node for remaining players ("winners") when bracket is done
     // this enables ranking of all "winners", if more than one
     private class FinalLayerNode extends Node<ResultType> {
@@ -257,9 +353,9 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
             // should not be called
         }
     }
-    
+
     private class BracketNodeLayer {
-        List<BracketNode<ResultType>> nodes = new ArrayList<>();
+        java.util.List<BracketNode<ResultType>> nodes = new ArrayList<>();
         SetModifier<Player<ResultType>> advancingMod;
         int advancingPlayers;
         int numPlayers;

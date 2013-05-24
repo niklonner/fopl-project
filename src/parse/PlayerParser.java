@@ -31,6 +31,7 @@ public class PlayerParser {
             System.exit(1);
         }
         Worker worker = new Worker();
+
         if(parse_tree != null) {
             parse_tree.accept(worker);
             return worker.getPlayers();

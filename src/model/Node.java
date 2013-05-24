@@ -120,7 +120,7 @@ public abstract class Node<ResultType> extends Observable
         players.add(p);
         stdNotify();
     }
-    
+
     /*
     public void addPlayer(Player<ResultType> p) {
         players.add(p);
@@ -160,7 +160,7 @@ public abstract class Node<ResultType> extends Observable
         }
         return -1;
     }
-    
+
     public String toString() {
         return "node " + getId();
     }
@@ -172,6 +172,14 @@ public abstract class Node<ResultType> extends Observable
 
     public Set<Player<ResultType>> getPlayers() {
         return new TreeSet(players);
+    }
+
+    public List<PlayerReceiver<ResultType>> getReceivers() {
+        List<PlayerReceiver<ResultType>> list = new ArrayList<>();
+        for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
+                list.add(pair.fst);
+        }
+        return list;
     }
 
     // debug
