@@ -96,33 +96,6 @@ public class TournamentParser {
         return null;
     }
 
-
-    //public void parse(String path) {
-    //Yylex l = null;
-    //parser p;
-
-    //try {
-    //l = new Yylex(new FileReader(path));
-    //}
-    //catch(FileNotFoundException e) {
-    //System.err.println("Error: File not found: " + path);
-    //System.exit(1);
-    //}
-
-    //p = new parser(l);
-
-    //try {
-    //Play.Absyn.Prog parse_tree = p.pProg();
-
-    //Parser parser = new Parser();
-    //parse_tree.accept(parser);
-    //} catch(Throwable e) {
-    //System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
-    //System.err.println("     " + e.getMessage());
-    //System.exit(1);
-    //}
-    //}
-
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
 
@@ -131,7 +104,7 @@ public class TournamentParser {
         Tournament<Integer> superTournament = new Tournament<>();
             
         model.SubTournament.Builder<?,Integer> builder;
-        int nrParam;
+        int nrParam;        // negative when not in parameter-collecting mode, non-negative otherwise
         int nrUnionParam;
 
         ReflectionHelper rh = new ReflectionHelper();
@@ -177,7 +150,6 @@ public class TournamentParser {
             /* Code For SubTournament Goes Here */
 
             System.out.println("Making tournament: " + subtournament.string_);
-            //subt = new SubTournament(subtournament.string_);
 
             boolean success = false;
             
@@ -243,6 +215,7 @@ public class TournamentParser {
                 e.printStackTrace();
                 System.exit(1);
             }
+            nrParam = -1;  // turn off parameter-collecting mode
         }
 
         public void visitMethod(Swag.Absyn.Method method) {
@@ -255,7 +228,9 @@ public class TournamentParser {
         }
         public void visitListExp(Swag.Absyn.ListExp listexp) {
             while(listexp!= null) {
-                nrParam++;
+                if (nrParam > -1) { // increase only if in parameter-collecting mode
+                    nrParam++;
+                }
                 nrUnionParam++;
                 listexp.exp_.accept(this);
                 listexp = listexp.listexp_;
@@ -264,8 +239,10 @@ public class TournamentParser {
         public void visitExp(Swag.Absyn.Exp exp) {} //abstract class
         public void visitEunion(Swag.Absyn.Eunion eunion)
         {
-            /* Code For Eunion Goes Here */
+            int nrParamTemp = nrParam;
+            nrParam = -1; // turn off parameter-collecting mode
 
+            int nrUnionParamTemp = nrUnionParam; // store current number (in case of nested unions)
             nrUnionParam = 0;
             
             if (eunion.listexp_ != null) {eunion.listexp_.accept(this);}
@@ -276,6 +253,11 @@ public class TournamentParser {
                 ss.add(setModifierReplaceKeywords(o));
             }
             SetModifier<Player<?>> sm = new UnionMod<>(ss);
+            stack.push(sm);
+            
+            nrParam = nrParamTemp; // turn parameter-collecting mode on again
+
+            nrUnionParam = nrUnionParamTemp; // restore
         }
         public void visitEeq(Swag.Absyn.Eeq eeq)
         {
@@ -542,33 +524,23 @@ public class TournamentParser {
         public void visitCmpOp(Swag.Absyn.CmpOp cmpop) {} //abstract class
         public void visitCOeq(Swag.Absyn.COeq coplus)
         {
-            /* Code For COplus Goes Here */
             stack.push(new EqOp());
-
         }
         public void visitCOlt(Swag.Absyn.COlt colt)
         {
-            /* Code For COlt Goes Here */
             stack.push(new LtOp());
-
         }
         public void visitCOle(Swag.Absyn.COle cole)
         {
-            /* Code For COle Goes Here */
             stack.push(new LeOp());
-
         }
         public void visitCOgt(Swag.Absyn.COgt cogt)
         {
-            /* Code For COgt Goes Here */
             stack.push(new GtOp());
-
         }
         public void visitCOge(Swag.Absyn.COge coge)
         {
-            /* Code For COge Goes Here */
             stack.push(new GeOp());
-
         }
         
         /**

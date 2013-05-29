@@ -5,6 +5,8 @@ import util.*;
 import sets.*;
 import parse.*;
 
+import org.apache.batik.svggen.*;
+
 public abstract class SubTournament<ResultType>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {
     private static int nextId = 0;

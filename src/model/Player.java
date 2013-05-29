@@ -42,7 +42,7 @@ public class Player<ResultType>
     }
 
     public String getPrettyPrintScore() {
-        return prettyPrinter == null ? "player " + getId() + " " + " score " + getResult().toString() : prettyPrinter.prettyPrint(this);
+        return prettyPrinter == null ? "player " + getId() + " " + " score " + (resultIsSet() ? getResult().toString() : "not set") : prettyPrinter.prettyPrint(this);
     }
     
     @SuppressWarnings("unchecked")

@@ -11,8 +11,7 @@ public class HasAttributeMod<E> implements SetModifier<E> {
         this.mod = mod;
     }
 
-    // returns tom num elements of (perhaps modified) set
-    public SortedSet<E> apply(SortedSet<E> set, Comparator<E> comp) {
+    public SortedSet<E> apply(SortedSet<? extends E> set, Comparator<? super E> comp) {
         SortedSet<E> ret = new TreeSet<E>(comp);
         for (E e : mod.apply(set,comp)) {
             if (((model.Player<?>)e).attributeIsSet(str)) {

@@ -4,6 +4,8 @@ import model.*;
 import sets.*;
 import java.util.*;
 
+import org.apache.batik.svggen.*;
+
 public class OpenPlay<ResultType> extends SubTournament<ResultType> {
     private Bracket<ResultType> bracket;
     private List<Player<ResultType>> tmpReceiveHook;
@@ -105,4 +107,9 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
             tmpAcceptPlayer.add(p);
         }
     }
+
+    public void draw(SVGGraphics2D g) {
+        // TODO!
+    }
+
 }

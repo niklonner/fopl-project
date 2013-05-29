@@ -25,17 +25,9 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
     private int advancing;
     private int playUntil;
     private boolean resetLevels;
-    private List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
+    private java.util.List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
     // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
-    private List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
-
-    private int groupBy;
-    private int advancing;
-    private int playUntil;
-    private boolean resetLevels;
-    private List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
-    // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
-    private List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
+    private java.util.List<Pair<String, SetModifier<Player<ResultType>>>> perNodeReceivers = new ArrayList<>();
 
     private java.util.List<BracketNodeLayer> nodeLayers = new ArrayList<>();
     private FinalLayerNode finalLayer;

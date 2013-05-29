@@ -144,7 +144,8 @@ util/Pair.class: util/Pair.java
 	javac -cp $(CP) util/Pair.java
 
 #tests
-test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
+test: ../test/util/ReflectionHelperTest.class ../test/sets/SetTest.class \
+	../test/AllTests.class
 	java -cp $(CP):$(TEST) org.junit.runner.JUnitCore AllTests
 
 ../test/AllTests.class: ../test/util/ReflectionHelperTest.class ../test/AllTests.java
@@ -152,6 +153,9 @@ test: ../test/util/ReflectionHelperTest.class ../test/AllTests.class
 
 ../test/util/ReflectionHelperTest.class: util/ReflectionHelper.class ../test/util/ReflectionHelperTest.java
 	javac -cp $(CP):$(TEST) ../test/util/ReflectionHelperTest.java
+	
+../test/sets/SetTest.class: ../test/sets/SetTest.java
+	javac -cp $(CP):$(TEST) ../test/sets/SetTest.java
 
 #bwlag
 bwlag: bwlag/model/CmpStandard.class bwlag/model/RndStandard.class \
