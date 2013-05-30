@@ -11,15 +11,6 @@ import java.awt.geom.*;
 import org.apache.batik.swing.*;
 import org.apache.batik.svggen.*;
 
-
-// KEYWORDS
-// sendto
-// groupby
-// playuntil
-// advance
-// sendlosersto
-// sendtopernode
-
 public class Bracket<ResultType> extends SubTournament<ResultType> {
     private int groupBy;
     private int advancing;
@@ -46,6 +37,7 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         receivers = builder.subTournament.receivers;
         perNodeReceivers = builder.subTournament.perNodeReceivers;
         resetLevels = builder.subTournament.resetLevels;
+        isPlayerSource = builder.subTournament.isPlayerSource;
     }
 
     public static class Builder<ResultType>
@@ -146,24 +138,18 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         }
         // build first level
         int numPlayers = numPlayersWithLevel(0);
-        /*        for (Player<?> p : players) {
-            System.out.println(p.get("level"));
-            }*/
         int numNodes = (int)Math.ceil((double)numPlayers/groupBy);
         BracketNodeLayer previousLayer = new BracketNodeLayer(numNodes,numPlayers);
         nodeLayers.add(previousLayer);
-        //        int remaining = previousLa;
         // build remaining levels
         int level = 1;
         numPlayers = numPlayersWithLevel(level) + previousLayer.getAdvancing();
         while (numPlayers > playUntil) {
             numNodes = (int)Math.ceil((double)numPlayers/groupBy);
-            //            System.out.println(numPlayers);
             BracketNodeLayer layer = new BracketNodeLayer(numNodes,numPlayers);
             previousLayer.connectWith(layer);
             nodeLayers.add(layer);
             previousLayer = layer;
-            //            remaining = numNodes*advancing;
             level++;
             numPlayers = numPlayersWithLevel(level) + previousLayer.getAdvancing();
         }
@@ -177,7 +163,19 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
     }
 
     protected void dummyRun() {
-        // add players
+        addPlayersToNodes();
+        // now randomize results
+        for (BracketNodeLayer bnl : nodeLayers) {
+            for (BracketNode<ResultType> n : bnl.nodes) {
+                for (Player<ResultType> p : n.getPlayers()) {
+                    n.addResult(p.getId(),rnd.next());
+                }
+            }
+        }
+        clearPlayers();
+    }
+
+    private void addPlayersToNodes() {
         int level = 0;
         BracketNodeLayer prevLayer = null;
         for (BracketNodeLayer bnl : nodeLayers) {
@@ -204,17 +202,21 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
             level++;
             prevLayer = bnl;
         }
-        // now randomize results
+
+    }
+    
+    private void clearPlayers() {
         for (BracketNodeLayer bnl : nodeLayers) {
             for (BracketNode<ResultType> n : bnl.nodes) {
-                for (Player<ResultType> p : n.getPlayers()) {
-                    //                    System.out.println(n.getId());
-                    //                    System.out.println(n.getPlayers());
-                    n.addResult(p.getId(),rnd.next());
-                }
+                n.clearPlayers();
             }
         }
-
+        finalLayer.clearPlayers();
+        players.clear();
+        if (isPlayerSource) {
+            readPlayers();
+            addPlayersToNodes();
+        }
     }
 
     private int numPlayersWithLevel(int level) {
@@ -406,9 +408,28 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         }
     }
 
-    public void addObserver(Observer o) {
-        for (Node<ResultType> n : nodes) {
-            n.addObserver(o);
-        }
+    
+    public Iterator<Node<ResultType>> iterator() {
+        return new Iterator<Node<ResultType>>() {
+            int bnlNum = 0;
+            int nodeNum = 0;
+            public boolean hasNext() {
+                return nodeNum < nodeLayers.get(bnlNum).nodes.size() || bnlNum+1 < nodeLayers.size();
+            }
+            public Node<ResultType> next() {
+                if (nodeNum < nodeLayers.get(bnlNum).nodes.size()) {
+                    return nodeLayers.get(bnlNum).nodes.get(nodeNum++);
+                } else if (bnlNum+1 < nodeLayers.size()) {
+                    bnlNum++;
+                    nodeNum = 0;
+                    return nodeLayers.get(bnlNum).nodes.get(nodeNum++);
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 }

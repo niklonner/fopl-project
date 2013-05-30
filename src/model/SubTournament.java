@@ -19,6 +19,8 @@ public abstract class SubTournament<ResultType>
     protected RandomGenerator<ResultType> rnd;
     protected Tournament tournament;
     protected PrettyPrinterScore<ResultType> pps;
+    protected boolean isPlayerSource;
+    protected String playerSource;
 
     public abstract void draw(SVGGraphics2D g);
 
@@ -54,21 +56,13 @@ public abstract class SubTournament<ResultType>
         }
         tournament = builder.subTournament.tournament;
         pps = builder.subTournament.pps;
-        if (builder.playerSource != null) {
-            PlayerParser pp = new PlayerParser();
-            List<Player> players = (List<Player>) pp.parse(builder.playerSource);
-            for (Player p : players) {
-                acceptPlayer((Player<ResultType>) p);
-                if (pps != null) {
-                    p.setPrettyPrinter(pps);
-                }
-            }
-        }
+        playerSource = builder.subTournament.playerSource;
+        isPlayerSource = builder.subTournament.isPlayerSource;
+        readPlayers();
     }
 
     public static abstract class Builder<T extends Builder<T,ResultType>, ResultType> {
         protected SubTournament<ResultType> subTournament;
-        protected String playerSource;
 
         public Builder() {
             subTournament = createSubTournament();
@@ -98,7 +92,8 @@ public abstract class SubTournament<ResultType>
         }
         
         public T playerSource(String source) {
-            playerSource = source;
+            subTournament.isPlayerSource = true;
+            subTournament.playerSource = source;
             return me();
         }
 
@@ -120,8 +115,16 @@ public abstract class SubTournament<ResultType>
         
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
     public Iterator<Node<ResultType>> iterator() {
-        return nodes.iterator(); // TODO: implement topological sort
+        return nodes.iterator();
     }
 
     public int getId() {
@@ -139,4 +142,30 @@ public abstract class SubTournament<ResultType>
         receiveHook(p);
     }
 
+    public SortedSet<Player<ResultType>> getPlayers() {
+        SortedSet<Player<ResultType>> ret = new TreeSet(comp);
+        ret.addAll(players);
+        return ret;
+    }
+
+    protected void readPlayers() {
+        if (isPlayerSource) {
+            PlayerParser pp = new PlayerParser();
+            List<Player> players = (List<Player>) pp.parse(playerSource);
+            for (Player p : players) {
+                acceptPlayer((Player<ResultType>) p);
+                if (pps != null) {
+                    p.setPrettyPrinter(pps);
+                }
+            }
+        }
+    }
+
+    public void addObserver(Observer o) {
+        super.addObserver(o);
+        for (Node<ResultType> n : nodes) {
+            n.addObserver(o);
+        }
+    }
+    
 }

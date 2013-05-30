@@ -46,8 +46,12 @@ public class TournamentParser {
         if(parse_tree != null) {
             Worker visitor = new Worker(java.util.Arrays.asList("model"));
             parse_tree.accept(visitor);
-            for (int i=1;i<args.length;i++) {
-                visitor.superTournament.findSubTournament(args[i]).startBuild();
+            for (model.SubTournament<?> t : visitor.superTournament) {
+                t.startBuild();
+            }
+            System.out.println("players:");
+            for (model.SubTournament<?> t : visitor.superTournament) {
+                System.out.println(t.getId() + " " + t.getPlayers());
             }
         }
     }
@@ -66,19 +70,18 @@ public class TournamentParser {
         }
     }
 
-    public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp, PrettyPrinterScore<T> pps) throws ContextException {
+    public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp, PrettyPrinterScore<T> pps) throws ContextException, FileNotFoundException {
         Swag.Absyn.Prog parse_tree;
-        try {
-            parse_tree = BasicParser.parseTournamentFile(path);
-        } catch (FileNotFoundException e) {
-            return null;
-        }
+        parse_tree = BasicParser.parseTournamentFile(path);
         Worker visitor = new Worker(packages);
         visitor.setComparator(cmp);
         visitor.setRandomGenerator(rnd);
         visitor.setPrettyPrinter(pps);
         if(parse_tree != null) {
             parse_tree.accept(visitor);
+            for (model.SubTournament<?> t : visitor.superTournament) {
+                t.startBuild();
+            }
             return (Tournament) visitor.superTournament;
         }
         return null;
@@ -186,7 +189,9 @@ public class TournamentParser {
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
 
             builder.setTournament(superTournament);
-            superTournament.addSubTournament(subtournament.string_,builder.getSubTournament());
+            model.SubTournament<Integer> st = builder.getSubTournament();
+            st.setName(subtournament.string_);
+            superTournament.addSubTournament(subtournament.string_,st);
         }
         public void visitListStmt(Swag.Absyn.ListStmt liststmt)
         {

@@ -8,14 +8,11 @@ import java.util.*;
 public class BwlagParser {
     private static TournamentParser parser = new TournamentParser(Arrays.asList("bwlag.model"));
 
-    public static void main(String[] args) throws util.ContextException {
+    public static void main(String[] args) throws util.ContextException, java.io.FileNotFoundException {
         Tournament<List<Integer>> t = parse(args[0]);
-        for (int i=1;i<args.length;i++) {
-            t.findSubTournament(args[i]).startBuild();
-        }
     }
     
-    public static Tournament<List<Integer>> parse(String path) throws util.ContextException {
+    public static Tournament<List<Integer>> parse(String path) throws util.ContextException, java.io.FileNotFoundException {
         return parser.<List<Integer>>parse(path, new RndStandard(), new CmpStandard(), new PPSStandard());
     }
 }

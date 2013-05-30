@@ -18,12 +18,6 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
     public OpenPlay(Builder<ResultType> builder) {
         super(builder);
         bracket = builder.bb.getSubTournament();
-        for (Player<ResultType> p : tmpReceiveHook) {
-            receiveHook(p);
-        }
-        for (Player<ResultType> p : tmpAcceptPlayer) {
-            acceptPlayer(p);
-        }
     }
 
     public static class Builder<ResultType> extends SubTournament.Builder<OpenPlay.Builder<ResultType>, ResultType> {
@@ -47,6 +41,27 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
             return op;
         }
 
+        public Builder<ResultType> playerSource(String source) {
+            //            super.playerSource(source);
+            bb.playerSource(source);
+            return this;
+        }
+
+        public Builder<ResultType> setPlayers(SortedSet<Player<ResultType>> players) {
+            bb.setPlayers(players);
+            return me();
+        }
+
+        public Builder<ResultType> setObservers(List<Observer> observers) {
+            bb.setObservers(observers);
+            return me();
+        }
+
+        public Builder<ResultType> setPrettyPrinter(PrettyPrinterScore<ResultType> pps) {
+            bb.setPrettyPrinter(pps);
+            return me();
+        }
+        
         public Builder<ResultType> sendTo(String dest, SetModifier<Player<ResultType>> mod) {
             bb.sendTo(dest, mod);
             return this;
@@ -96,6 +111,10 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
         bracket.startBuild();
     }
 
+    public SortedSet<Player<ResultType>> getPlayers() {
+        return bracket.getPlayers();
+    }
+    
     public void acceptPlayer(Player<ResultType> p) {
         super.acceptPlayer(p);
         if (bracket != null) {
@@ -108,8 +127,16 @@ public class OpenPlay<ResultType> extends SubTournament<ResultType> {
         }
     }
 
+    public Iterator<Node<ResultType>> iterator() {
+        return bracket.iterator();
+    }
+    
     public void draw(SVGGraphics2D g) {
         // TODO!
     }
 
+    public void addObserver(Observer o) {
+        bracket.addObserver(o);
+    }
+    
 }

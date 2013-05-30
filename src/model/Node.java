@@ -121,12 +121,6 @@ public abstract class Node<ResultType> extends Observable
         stdNotify();
     }
 
-    /*
-    public void addPlayer(Player<ResultType> p) {
-        players.add(p);
-        stdNotify();
-        }*/
-
     protected void sendPlayersOff() {
         System.out.printf("node %d sending players off\n",getId());
         for (Player<ResultType> p : players) {
@@ -180,6 +174,10 @@ public abstract class Node<ResultType> extends Observable
                 list.add(pair.fst);
         }
         return list;
+    }
+
+    public void clearPlayers() {
+        players.clear();
     }
 
     // debug

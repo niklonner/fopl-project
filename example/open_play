@@ -1,6 +1,6 @@
 "open" : open_play {
     player_source: "../example/players";
-    send_to: "final", top 8 all;
+    send_to: "final", top 4 all;
 }
 
 "final" : bracket {

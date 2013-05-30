@@ -11,7 +11,7 @@ public class PPSStandard implements model.PrettyPrinterScore<List<Integer>> {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("Player ");
-        sb.append(p.getId());
+        sb.append(p.getName());
         sb.append(" games ");
         int score = 0;
         for (Integer i : ls) {

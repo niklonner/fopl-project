@@ -5,21 +5,11 @@ import sets.*;
 import parse.*;
 
 public class Tournament<ResultType> implements Iterable<SubTournament<ResultType>> {
-    public  Map<String,SubTournament<ResultType>> subTournaments;
+    public  LinkedHashMap<String,SubTournament<ResultType>> subTournaments;
 
     public Tournament() {
-        subTournaments = new TreeMap<>();
+        subTournaments = new LinkedHashMap<>();
     }
-
-    // returns true if add is ok (name doesnt already exist)
-    // public boolean addNode(Node n) {
-    // 	if (!nodes.containsKey(n.getName())) {
-    // 	    nodes.put(n.getName(),n);
-    // 	    return true;
-    // 	} else {
-    // 	    return false;
-    // 	}
-    // }
 
     public SubTournament<ResultType> findSubTournament(String str) {
         return subTournaments.get(str);
@@ -30,7 +20,6 @@ public class Tournament<ResultType> implements Iterable<SubTournament<ResultType
     }
     
     public Iterator<SubTournament<ResultType>> iterator() {
-        //        return subtournaments.iterator();
-        return null;
+        return subTournaments.values().iterator();
     }
 }

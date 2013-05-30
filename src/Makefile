@@ -4,6 +4,7 @@ SWAGDIR = ../bnfc/Swag
 PLAYDIR = ../bnfc/Play
 CP = .:$(LIB):$(SWAGDIR):$(PLAYDIR)
 TEST = ../lib/JUnit/junit.jar:../lib/JUnit/hamcrest.jar:../test
+SOURCE = "../example/double_elimination"
 
 #main targets
 all: BasicParser util/ContextException.class parse/TournamentParser.class parse/PlayerParser.class \
@@ -160,7 +161,7 @@ test: ../test/util/ReflectionHelperTest.class ../test/sets/SetTest.class \
 #bwlag
 bwlag: bwlag/model/CmpStandard.class bwlag/model/RndStandard.class \
 	bwlag/parse/BwlagParser.class bwlag/model/OpenPlay.class \
-	bwlag/model/PPSStandard.class
+	bwlag/model/PPSStandard.class bwlag/application/TextApplication.class
 
 bwlag/model/CmpStandard.class: bwlag/model/CmpStandard.java
 	javac -cp $(CP) bwlag/model/CmpStandard.java
@@ -177,7 +178,12 @@ bwlag/model/PPSStandard.class: bwlag/model/PPSStandard.java
 bwlag/parse/BwlagParser.class: bwlag/parse/BwlagParser.java
 	javac -cp $(CP) bwlag/parse/BwlagParser.java
 
-	
+bwlag/application/TextApplication.class: bwlag/application/TextApplication.java
+	javac -cp $(CP) bwlag/application/TextApplication.java
+
+runtextapp:
+	java -cp $(CP) bwlag.application.TextApplication $(SOURCE)
+
 #clean
 clean:
 	rm $(SWAGDIR)/Swag/BasicParser.*
