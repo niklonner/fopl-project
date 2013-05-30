@@ -214,7 +214,6 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         players.clear();
         if (isPlayerSource) {
             readPlayers();
-            //            addPlayersToNodes();
         }
     }
 
@@ -316,12 +315,6 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
             }
         }
 
-        //for(int l = 1; l < nodeLayers.size(); l++) {
-            //BracketNodeLayer layer = nodeLayers.get(l);
-
-            //for(int n = 0; n < layer.size(); n++) {
-            //
-        //}
     }
 
     private void updateParentNodesPosistions(Node node, double xPos) {

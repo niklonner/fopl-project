@@ -23,7 +23,10 @@ public abstract class SubTournament<ResultType>
     protected String playerSource;
 
     public abstract void draw(SVGGraphics2D g);
-
+    public abstract void startBuild();
+    protected abstract void dummyRun();
+    protected abstract void receiveHook(Player<ResultType> p);
+    
     // only for use by subclasses
     protected SubTournament() {
         //      this("subtournament " + nextId);
@@ -131,12 +134,6 @@ public abstract class SubTournament<ResultType>
             return id;
     }
     
-    public abstract void startBuild();
-
-    protected abstract void dummyRun();
-
-    protected abstract void receiveHook(Player<ResultType> p);
-
     public void acceptPlayer(Player<ResultType> p) {
         players.add(p);
         receiveHook(p);

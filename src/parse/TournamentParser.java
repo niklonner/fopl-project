@@ -35,8 +35,6 @@ public class TournamentParser {
         this.packages.add("model");
     }
 
-                             
-    
     /**
      * For simple command-line testing
      */

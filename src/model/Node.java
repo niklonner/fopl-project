@@ -20,27 +20,15 @@ public abstract class Node<ResultType> extends Observable
     protected List<Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>> toReceivers = new ArrayList<>();
     protected Comparator<Player<ResultType>> comp;
 
-    // only for use by subclasses
+    public abstract void beforeSendOffHook(Player<ResultType> p);
+    public abstract void afterSendOffHook(Player<ResultType> p);
+    /* "driver" method. Should rank players and, when appropriate, send them to next node */
+    public abstract void addResult(Integer playerId, ResultType result);
+
     protected Node() {
         id = nextId;
         name = "node " + (nextId++);
     }
-
-    // // maybe remove and only allow construction by Builder
-    // protected Node(String name) {
-    //     //   this(name, null);
-    // }
-
-    // // maybe remove and only allow construction by Builder
-    // protected Node(String name,
-    //         Comparator<Player<ResultType>> comp,
-    //         List<Pair<PlayerReceiver, SetModifier>> toReceivers,
-    //         SortedSet<Player<ResultType>> players,
-    //         List<Observer> observers) {
-    //     this.name = name;
-    //     players = new TreeSet<>(comp);
-    //     this.toReceivers = new LinkedList<>(toReceivers);
-    // }
 
     protected Node(Builder<?,ResultType> builder) {
         id = builder.node.id;
@@ -109,11 +97,9 @@ public abstract class Node<ResultType> extends Observable
         return name;
     }
 
-    /* "driver" method. Should rank players and, when appropriate, send them to next node */
-    public abstract void addResult(Integer playerId, ResultType result);
-
     public void addReceiver(PlayerReceiver<ResultType> p, SetModifier<Player<ResultType>> s) {
         toReceivers.add(new Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>>(p,s));
+        stdNotify();
     }
 
     public void acceptPlayer(Player<ResultType> p) {
@@ -149,9 +135,6 @@ public abstract class Node<ResultType> extends Observable
         notifyObservers(new Pair<>(model.EventType.SENDOFF,notification));
     }
 
-    public abstract void beforeSendOffHook(Player<ResultType> p);
-    public abstract void afterSendOffHook(Player<ResultType> p);
-
     public int rank(Player<ResultType> player) {
         int i=0;
         for (Player<ResultType> p : players) {
@@ -168,8 +151,8 @@ public abstract class Node<ResultType> extends Observable
     }
 
     private void stdNotify() {
-        //        setChanged();
-        //        notifyObservers(new Pair<>(model.EventType.UPDATE,null););
+        setChanged();
+        notifyObservers(new Pair<>(model.EventType.UPDATE,null));
     }
 
     public Set<Player<ResultType>> getPlayers() {
@@ -186,9 +169,10 @@ public abstract class Node<ResultType> extends Observable
 
     public void clearPlayers() {
         players.clear();
+        stdNotify();
     }
 
-    // debug
+    // debug.
     private void printMods() {
         System.out.println(toReceivers);
     }
