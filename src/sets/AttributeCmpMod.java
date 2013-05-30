@@ -23,7 +23,6 @@ public class AttributeCmpMod<E> implements SetModifier<E> {
                 ret.add(e);
             }
         }
-        System.out.println(ret);
         return ret;
     }
 }

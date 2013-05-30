@@ -2,7 +2,9 @@ package sets;
 
 public class GeOp extends Operator {
     public boolean apply(Number d1, Double d2) {
-        double d = d1==null ? 0 : d1.doubleValue();
-        return d >= d2;
+        if (d1 == null)
+            return false;
+        Double d = d1.doubleValue();
+        return d.compareTo(d2) >= 0;
     }
 }

@@ -207,4 +207,45 @@ public class SetTest {
             }
         }
     }
+
+    @Test
+    public void testAttributeCmpMod() {
+        EqOp eqop = new EqOp();
+        GeOp geop = new GeOp();
+        GtOp gtop = new GtOp();
+        LeOp leop = new LeOp();
+        LtOp ltop = new LtOp();
+        Operator[] ops = {eqop, geop, gtop, leop, ltop};
+        final String TEST = "TEST";
+        for (DummyMod d : sets) {
+            for (Player<?> p : d.ps) {
+                if (rnd.nextInt(2) == 0) {
+                    p.set(TEST, rnd.nextInt(100) - 50);
+                }
+            }
+        }
+        for (Operator op : ops) {
+            for (DummyMod d : sets) {
+                double val = rnd.nextDouble();
+                AttributeCmpMod<Player<?>> test = new AttributeCmpMod(TEST, op, val, d);
+                SortedSet<Player<?>> res = test.apply(DUMMY_SET, null);
+                for (Player<?> p : res) {
+                    assertTrue(d.ps.contains(p));
+                    assertTrue(op.apply((Number)p.get(TEST),val));
+                }
+                for (Player<?> p : d.ps) {
+                    if (op.apply((Number)p.get(TEST),val)) {
+                        assertTrue(res.contains(p));
+                    } else {
+                        assertFalse(res.contains(p));
+                    }
+                }
+            }
+        }
+        for (DummyMod d : sets) {
+            for (Player<?> p : d.ps) {
+                p.set(TEST, null);
+            }
+        }
+    }
 }
