@@ -15,4 +15,7 @@ How to start the schema editor/viewer
 -------------------------------------
 Execute "make run" in the project or "src" folder.
 
-
+Presentation
+------------
+The slides from the presentation can be found under the "Downloads" tab
+at the repository's website.
