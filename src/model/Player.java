@@ -3,7 +3,7 @@ package model;
 import java.util.*;
 
 public class Player<ResultType>
-    implements Comparable<Player<ResultType>> {
+    implements Comparable<Player<ResultType>>, Cloneable {
     private static int nextId = 0;
 
     private Integer id; // Object so null will be default value.
@@ -104,6 +104,19 @@ public class Player<ResultType>
             return false;
         } else {
             return id == ((Player<ResultType>)o).id;
+        }
+    }
+
+    public Player<ResultType> clone() {
+        try {
+            Player<ResultType> p = (Player<ResultType>)super.clone();
+            p.attributes = new HashMap<>();
+            for (Map.Entry<String,Object> e : attributes.entrySet()) {
+                p.attributes.put(e.getKey(),e.getValue());
+            }
+            return p;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
         }
     }
 }

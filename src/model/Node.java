@@ -122,23 +122,31 @@ public abstract class Node<ResultType> extends Observable
     }
 
     protected void sendPlayersOff() {
-        System.out.printf("node %d sending players off\n",getId());
         for (Player<ResultType> p : players) {
-            System.out.println("\t" + p);
             beforeSendOffHook(p);
         }
+        List<Pair<Player<ResultType>, PlayerReceiver<ResultType>>> notification = new ArrayList<>();
         for (Pair<PlayerReceiver<ResultType>, SetModifier<Player<ResultType>>> pair : toReceivers) {
             for (Player<ResultType> p : pair.snd.apply(players,comp)) {
-                if (pair.fst instanceof Node) {
-                    System.out.printf("sending player %d to node %d\n", p.getId(), ((Node<ResultType>)pair.fst).getId());
-                } else if (pair.fst instanceof SubTournament) {
-                    System.out.printf("sending player %d to subtournament %d\n", p.getId(), ((SubTournament<ResultType>)pair.fst).getId());
-                }
+                notification.add(new Pair<>(p.clone(),pair.fst));
                 afterSendOffHook(p);
                 pair.fst.acceptPlayer(p);
             }
         }
-        System.out.println();
+        for (Player<ResultType> p : players) {
+            boolean inList = false;
+            for (Pair<Player<ResultType>,?> pair : notification) {
+                if (p.equals(pair.fst)) {
+                    inList = true;
+                    break;
+                }
+            }
+            if (!inList) {
+                notification.add(new Pair<Player<ResultType>,PlayerReceiver<ResultType>>(p,null));
+            }
+        }
+        setChanged();
+        notifyObservers(new Pair<>(model.EventType.SENDOFF,notification));
     }
 
     public abstract void beforeSendOffHook(Player<ResultType> p);
@@ -160,8 +168,8 @@ public abstract class Node<ResultType> extends Observable
     }
 
     private void stdNotify() {
-        setChanged();
-        notifyObservers();
+        //        setChanged();
+        //        notifyObservers(new Pair<>(model.EventType.UPDATE,null););
     }
 
     public Set<Player<ResultType>> getPlayers() {

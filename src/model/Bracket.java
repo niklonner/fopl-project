@@ -194,7 +194,6 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
                     if (playerCounter % groupBy == 0) {
                         node = it.next();
                     }
-                    System.out.println("add player " + p.getId() + " at node " + node.getId()  + " (level " + level + ")");
                     node.acceptPlayer(p);
                     playerCounter++;
                 }
@@ -215,10 +214,38 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
         players.clear();
         if (isPlayerSource) {
             readPlayers();
-            addPlayersToNodes();
+            //            addPlayersToNodes();
         }
     }
 
+    public void acceptPlayer(Player<ResultType> p) {
+        super.acceptPlayer(p);
+        if (built) {
+            findPlaceForPlayer(p);
+        }
+    }
+
+    private void findPlaceForPlayer(Player<ResultType> p) {
+        if (!p.attributeIsSet("level") || (int)p.get("level") == 0) {
+            for (Node<ResultType> n : nodeLayers.get(0).nodes) {
+                if (n.getPlayers().size() < groupBy) {
+                    n.acceptPlayer(p);
+                    break;
+                }
+            }
+        } else {
+            int level = (int)p.get("level");
+            java.util.List<BracketNode<ResultType>> nodes = new ArrayList<>(nodeLayers.get(level).nodes);
+            for (int i=nodes.size()-1;i>=0;i--) {
+                if (nodes.get(i).getPlayers().size() < groupBy) {
+                    nodes.get(i).acceptPlayer(p);
+                    break;
+                }
+            }
+            
+        }
+    }
+    
     private int numPlayersWithLevel(int level) {
         int ret = 0;
         for (Player p : players) {
@@ -431,5 +458,10 @@ public class Bracket<ResultType> extends SubTournament<ResultType> {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    public void addObserver(Observer o) {
+        super.addObserver(o);
+        finalLayer.addObserver(o);
     }
 }

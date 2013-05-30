@@ -10,7 +10,7 @@ SOURCE = "../example/double_elimination"
 all: BasicParser util/ContextException.class parse/TournamentParser.class parse/PlayerParser.class \
 	model/Node.class model/Tournament.class model/SubTournament.class model/Bracket.class \
 	model/BracketNode.class model/Player.class \
-	model/RndDefault.class \
+	model/RndDefault.class model/EventType.class \
 	sets/BottomMod.class sets/IdentityMod.class \
 	sets/SetModifier.class sets/TopMod.class \
     sets/AttributeCmpMod.class sets/HasAttributeMod.class \
@@ -81,6 +81,8 @@ model/Player.class: model/Player.java
 model/RndDefault.class: model/RndDefault.java
 	javac -cp $(CP) model/RndDefault.java
 	
+model/EventType.class: model/EventType.java
+	javac -cp $(CP) model/EventType.java
 #parse
 parse/TournamentParser.class: parse/TournamentParser.java
 	javac -cp $(CP) parse/TournamentParser.java

@@ -5,7 +5,7 @@ import model.*;
 
 public class PPSStandard implements model.PrettyPrinterScore<List<Integer>> {
     public String prettyPrint(Player<List<Integer>> p) {
-        List<Integer> ls = p.getResult();
+        List<Integer> ls = p.resultIsSet() ? p.getResult() : null;
         if (ls==null) {
             return "Player " + p.getId() + " 0 points";
         }
