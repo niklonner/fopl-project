@@ -9,6 +9,10 @@ import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Responsible for traversing a Play parse-tree and creating the corresponding players.
+ * Most of the work is delegated to the private "Worker"-class.
+ */
 public class PlayerParser {
     /**
      * For simple command-line testing
@@ -40,6 +44,9 @@ public class PlayerParser {
         }
     }
 
+    /**
+     * Actually executes the tree-traversal.
+     */
     private static class Worker implements Visitor {
         List<Player> players = new ArrayList<>();
         Player<Integer> currentPlayer;
