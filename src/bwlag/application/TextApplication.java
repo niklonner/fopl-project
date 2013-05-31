@@ -42,7 +42,7 @@ public class TextApplication {
         
         public void startDialogue() throws IOException {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("When prompted, enter a whitespace-separated list of games.");
+            System.out.println("\n\n\n\n\nOK LET'S GO:\n---------------\nWhen prompted, enter a whitespace-separated list of games.");
             for (SubTournament<List<Integer>> st : tournament) {
                 System.out.println("Now at subtournament " + st.getName());
                 for (Node<List<Integer>> n : st) {
