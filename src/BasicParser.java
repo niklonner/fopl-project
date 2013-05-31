@@ -6,6 +6,11 @@ import java.io.*;
 
 import util.ContextException;
 
+/**
+ * Creates a parse tree using the bnfc-generated files.
+ * During compilation of the project, this file is copied to the Play and
+ * Swag folder in the bnfc directory.
+ */
 public class BasicParser {
 
     public static <<package>>.Absyn.Prog parseTournamentFile(String path) throws ContextException, FileNotFoundException {

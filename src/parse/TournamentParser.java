@@ -23,6 +23,11 @@ import java.util.Comparator;
 
 import java.lang.reflect.*;
 
+/**
+ * Responsible for traversing a Swag parse-tree and creating the corresponding
+ * tournament.
+ * Most of the work is delegated to the private "Worker"-class.
+ */
 public class TournamentParser {
     private List<String> packages;
 
@@ -84,7 +89,7 @@ public class TournamentParser {
         }
         return null;
     }
-    
+
     public List<model.SubTournament<?>> parseString(String sourceCode) throws ContextException {
         List<model.SubTournament<?>> subt;
         Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentString(sourceCode);
@@ -101,11 +106,14 @@ public class TournamentParser {
         return ret;
     }
 
+    /**
+     * Actually handles the tree-traversal.
+     */
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
 
         Tournament<Integer> superTournament = new Tournament<>();
-            
+
         model.SubTournament.Builder<?,Integer> builder;
         int nrParam;        // negative when not in parameter-collecting mode, non-negative otherwise
         int nrUnionParam;
@@ -121,7 +129,7 @@ public class TournamentParser {
         public Worker(List<String> packages) {
             this.packages = packages;
         }
-        
+
         public void setComparator(Comparator cmp) {
             comp = cmp;
         }
@@ -133,7 +141,7 @@ public class TournamentParser {
         public void setPrettyPrinter(PrettyPrinterScore pps) {
             this.pps = pps;
         }
-        
+
         public void visitProg(Swag.Absyn.Prog prog) {} //abstract class
         public void visitProgram(Swag.Absyn.Program program) {
             /* Code For Program Goes Here */
@@ -155,7 +163,7 @@ public class TournamentParser {
             System.out.println("Making tournament: " + subtournament.string_);
 
             boolean success = false;
-            
+
             for (String pkg : packages) {
                 StringBuilder clazz = new StringBuilder();
                 clazz.append(pkg);
@@ -185,7 +193,7 @@ public class TournamentParser {
             if (pps != null) {
                 builder.setPrettyPrinter(pps);
             }
-            
+
             if (subtournament.liststmt_ != null) {subtournament.liststmt_.accept(this);}
 
             builder.setTournament(superTournament);
@@ -249,9 +257,9 @@ public class TournamentParser {
 
             int nrUnionParamTemp = nrUnionParam; // store current number (in case of nested unions)
             nrUnionParam = 0;
-            
+
             if (eunion.listexp_ != null) {eunion.listexp_.accept(this);}
-            
+
             List<Object> os = pop(nrUnionParam, stack);
             List<SetModifier<Player<?>>> ss = new LinkedList<>();
             for (Object o : os) {
@@ -259,7 +267,7 @@ public class TournamentParser {
             }
             SetModifier<Player<?>> sm = new UnionMod<>(ss);
             stack.push(sm);
-            
+
             nrParam = nrParamTemp; // turn parameter-collecting mode on again
 
             nrUnionParam = nrUnionParamTemp; // restore
@@ -374,7 +382,7 @@ public class TournamentParser {
             } else {
                 throw new UnsupportedOperationException();
             }
-            
+
         }
 
 
@@ -412,7 +420,7 @@ public class TournamentParser {
             stack.push(sm);
         }
 
-        
+
         public void visitEintersect(Swag.Absyn.Eintersect eintersect)
         {
             eintersect.exp_1.accept(this);
@@ -439,7 +447,7 @@ public class TournamentParser {
             stack.push(sm);
 
         }
-        
+
         public void visitETop(Swag.Absyn.ETop etop)
         {
             visitInteger(etop.integer_);
@@ -455,7 +463,7 @@ public class TournamentParser {
                 throw new UnsupportedOperationException();
             }
         }
-        
+
         public void visitEBottom(Swag.Absyn.EBottom ebottom)
         {
             visitInteger(ebottom.integer_);
@@ -468,10 +476,10 @@ public class TournamentParser {
                 SetModifier<Player<?>> sm =  new BottomMod<Player<?>>((int)x,setModifierReplaceKeywords(y));
                 stack.push(sm);
             } else {
-                throw new UnsupportedOperationException();                
+                throw new UnsupportedOperationException();
             }
         }
-        
+
         public void visitEint(Swag.Absyn.Eint eint) {
             visitInteger(eint.integer_);
         }
@@ -527,7 +535,7 @@ public class TournamentParser {
         {
             stack.push(new GeOp());
         }
-        
+
         /**
          * Retrieves a number of objects from the stack as an Array.
          */

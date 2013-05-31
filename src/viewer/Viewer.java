@@ -9,6 +9,12 @@ import java.io.*;
 import parse.TournamentParser;
 import util.ContextException;
 
+/**
+ * A Swing application for viewing visual representations of tournament schemes.
+ * Consists of two panes - one for writing Swag-code and one for viewing the result.
+ * @see DisplayPanel
+ * @see CodeArea
+ */
 public class Viewer extends JFrame implements ActionListener, DisplayPanel.DisplayListener {
     DisplayPanel display;
     CodeArea text;
