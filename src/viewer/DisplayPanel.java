@@ -24,6 +24,11 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.w3c.dom.*;
 import org.w3c.dom.svg.*;
 
+/**
+ * Handles the display of svg-images.
+ * Hands a SVGGraphics2D object to each sub-tournament for drawing itself.
+ * The svg-capabilities are achieved through the use of the library Batik.
+ */
 public class DisplayPanel extends JPanel {
     JSVGCanvas canvas;
     DisplayListener dl;
@@ -77,16 +82,6 @@ public class DisplayPanel extends JPanel {
         for(SubTournament subt : subts) {
             subt.draw(g);
         }
-
-        //Shape circle = new Ellipse2D.Double(0, 0, 50, 50);
-        //g.setPaint(Color.red);
-        //g.fill(circle);
-        //g.translate(60, 0);
-        //g.setPaint(Color.green);
-        //g.fill(circle);
-        //g.translate(60, 0);
-        //g.setPaint(Color.blue);
-        //g.fill(circle);
     }
 
     private JSVGCanvas makeCanvas() {

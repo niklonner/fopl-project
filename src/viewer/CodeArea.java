@@ -6,6 +6,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
+/**
+ * Allows one to enter Swag text.
+ * In the case of syntax errors, the faulty line is hilighted in pink.
+ */
 public class CodeArea extends JTextArea implements DocumentListener {
     int errorLine = 0;
 
