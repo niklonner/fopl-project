@@ -153,15 +153,15 @@ The Play language
 The play language is simply a list of players coupled with their attributes,
 delimited by newlines. The player entries are written in the following form:
 
-“&lt;player name&gt;” = &lt;attribute&gt;, &lt;attribute&gt;, … , &lt;attribute&gt;
+<player name> = <attribute>, <attribute>, … , <attribute>
 
 An attribute can either be written as:
 
-&lt;attribute name&gt;
+<attribute name>
 
 or
 
-&lt;attribute name&gt;:&lt;value&gt;
+<attribute name>:<value>
 
 where <value> can be any (integer or decimal) number, or a string encased in
 double quotes.
