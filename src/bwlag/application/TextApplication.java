@@ -69,8 +69,12 @@ public class TextApplication {
                     List<Pair<Player<List<Integer>>,PlayerReceiver<List<Integer>>>> ls =
                         ((Pair<?,List<Pair<Player<List<Integer>>,PlayerReceiver<List<Integer>>>>>)arg).snd;
                     System.out.printf("node %d sending players off:\n", node.getId());
+                    SortedSet<Player<List<Integer>>> players = new TreeSet(node.getPlayers().comparator());
                     for (Pair<Player<List<Integer>>,PlayerReceiver<List<Integer>>> pair : ls) {
-                        System.out.println("\t" + pair.fst);
+                        players.add(pair.fst);
+                    }
+                    for (Player<?> p : players) {
+                        System.out.println("\t" + p);
                     }
                     for (Pair<Player<List<Integer>>,PlayerReceiver<List<Integer>>> pair : ls) {
                         String type;

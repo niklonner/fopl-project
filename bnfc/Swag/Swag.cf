@@ -16,15 +16,11 @@ ParamMethod . Stmt ::= Ident ":" [Exp];
 separator nonempty Exp ",";
 Method      . Stmt ::= Ident;
 
-Eunion        . Exp  ::= "(" [Exp] ")";
+Eunion        . Exp  ::= "[" [Exp] "]";
 
-Eeq           . Exp  ::= Exp "==" Exp1;
-Elt           . Exp  ::= Exp "<" Exp1;
-Elteq         . Exp  ::= Exp "<=" Exp1;
-Egt           . Exp  ::= Exp ">" Exp1;
-Egteq         . Exp  ::= Exp ">=" Exp1;
 Eadd          . Exp  ::= Exp "+" Exp1;
 Esub          . Exp  ::= Exp "-" Exp1;
+Edifference   . Exp  ::= Exp1 "\\" Exp2;
 Eintersect    . Exp1 ::= Exp1 "&" Exp2;
 ENotIntersect . Exp1 ::= Exp1 "|" Exp2;
 Ediv          . Exp1 ::= Exp1 "/" Exp2;
@@ -32,7 +28,7 @@ Emul          . Exp1 ::= Exp1 "*" Exp2;
 Emod          . Exp1 ::= Exp1 "%" Exp2;
 Epow          . Exp2 ::= Exp2 "^" Exp3;
 Efol          . Exp3 ::= Exp3 "." Ident;
-Efolcmp       . Exp3 ::= Exp3 "." Ident CmpOp Exp;
+Efolcmp       . Exp3 ::= Exp3 "." Ident CmpOp Exp4;
 ETop          . Exp4 ::= "top" Integer Exp4;
 EBottom       . Exp4 ::= "bottom" Integer Exp4;
 Eint          . Exp5 ::= Integer;
@@ -40,6 +36,7 @@ EDouble       . Exp5 ::= Double;
 EVar          . Exp5 ::= Ident;
 EString       . Exp5 ::= String;
 
+COne          . CmpOp ::= "!=";
 COeq          . CmpOp ::= "==";
 COlt          . CmpOp ::= "<";
 COle          . CmpOp ::= "<=";

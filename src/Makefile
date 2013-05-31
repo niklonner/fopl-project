@@ -15,7 +15,7 @@ all: BasicParser util/ContextException.class parse/TournamentParser.class parse/
 	sets/SetModifier.class sets/TopMod.class \
     sets/AttributeCmpMod.class sets/HasAttributeMod.class \
     sets/IntersectMod.class sets/NotIntersectMod.class \
-    sets/UnionMod.class \
+    sets/UnionMod.class sets/DifferenceMod.class \
     sets/Operator.class sets/EqOp.class sets/LtOp.class \
     sets/LeOp.class sets/GtOp.class sets/GeOp.class \
 	util/ContextException.class util/ReflectionHelper.class \
@@ -111,6 +111,9 @@ sets/HasAttributeMod.class: sets/HasAttributeMod.java
 
 sets/IntersectMod.class: sets/IntersectMod.java
 	javac -cp $(CP) sets/IntersectMod.java
+
+sets/DifferenceMod.class: sets/DifferenceMod.java
+	javac -cp $(CP) sets/DifferenceMod.java
 
 sets/NotIntersectMod.class: sets/NotIntersectMod.java
 	javac -cp $(CP) sets/NotIntersectMod.java

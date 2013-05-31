@@ -262,41 +262,6 @@ public class TournamentParser {
 
             nrUnionParam = nrUnionParamTemp; // restore
         }
-        public void visitEeq(Swag.Absyn.Eeq eeq)
-        {
-            /* Code For Eeq Goes Here */
-
-            eeq.exp_1.accept(this);
-            eeq.exp_2.accept(this);
-        }
-        public void visitElt(Swag.Absyn.Elt elt)
-        {
-            /* Code For Elt Goes Here */
-
-            elt.exp_1.accept(this);
-            elt.exp_2.accept(this);
-        }
-        public void visitElteq(Swag.Absyn.Elteq elteq)
-        {
-            /* Code For Elteq Goes Here */
-
-            elteq.exp_1.accept(this);
-            elteq.exp_2.accept(this);
-        }
-        public void visitEgt(Swag.Absyn.Egt egt)
-        {
-            /* Code For Egt Goes Here */
-
-            egt.exp_1.accept(this);
-            egt.exp_2.accept(this);
-        }
-        public void visitEgteq(Swag.Absyn.Egteq egteq)
-        {
-            /* Code For Egteq Goes Here */
-
-            egteq.exp_1.accept(this);
-            egteq.exp_2.accept(this);
-        }
         public void visitEadd(Swag.Absyn.Eadd eadd) {
             eadd.exp_1.accept(this);
             eadd.exp_2.accept(this);
@@ -432,11 +397,22 @@ public class TournamentParser {
                 throw new UnsupportedOperationException();
             }
         }
+
+        public void visitEdifference(Swag.Absyn.Edifference edifference)
+        {
+            edifference.exp_1.accept(this);
+            edifference.exp_2.accept(this);
+
+            Object y = stack.pop();
+            Object x = stack.pop();
+
+            SetModifier<Player<?>> sm =  new DifferenceMod<Player<?>>(setModifierReplaceKeywords(x),setModifierReplaceKeywords(y));
+            stack.push(sm);
+        }
+
         
         public void visitEintersect(Swag.Absyn.Eintersect eintersect)
         {
-            /* Code For Eintersect Goes Here */
-
             eintersect.exp_1.accept(this);
             eintersect.exp_2.accept(this);
 
@@ -525,6 +501,10 @@ public class TournamentParser {
         }
 
         public void visitCmpOp(Swag.Absyn.CmpOp cmpop) {} //abstract class
+        public void visitCOne(Swag.Absyn.COne cone)
+        {
+            stack.push(new NeOp());
+        }
         public void visitCOeq(Swag.Absyn.COeq coplus)
         {
             stack.push(new EqOp());

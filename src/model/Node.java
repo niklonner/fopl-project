@@ -155,7 +155,7 @@ public abstract class Node<ResultType> extends Observable
         notifyObservers(new Pair<>(model.EventType.UPDATE,null));
     }
 
-    public Set<Player<ResultType>> getPlayers() {
+    public SortedSet<Player<ResultType>> getPlayers() {
         return new TreeSet(players);
     }
 

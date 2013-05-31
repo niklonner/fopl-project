@@ -133,6 +133,30 @@ public class SetTest {
     }
 
     @Test
+    public void testDifferenceMod() {
+        for (int i=0;i<SETS;i++) {
+            for (int j=0;j<SETS;j++) {
+                DifferenceMod<Player<?>> test = new DifferenceMod<Player<?>>((SetModifier)sets[i],(SetModifier)sets[j]);
+                SortedSet<Player<?>> res = test.apply(DUMMY_SET,null);
+                for (Player<?> p : res) {
+                    assertTrue(sets[i].ps.contains(p));
+                    assertFalse(sets[j].ps.contains(p));
+                }
+                for (Player<?> p : sets[i].ps) {
+                    if (sets[j].ps.contains(p)) {
+                        assertFalse(res.contains(p));
+                    } else {
+                        assertTrue(res.contains(p));
+                    }
+                }
+                for (Player<?> p : sets[j].ps) {
+                    assertFalse(res.contains(p));
+                }
+            }
+        }
+    }
+    
+    @Test
     public void testIntersectMod() {
         testNIMod(true);
     }
@@ -215,7 +239,8 @@ public class SetTest {
         GtOp gtop = new GtOp();
         LeOp leop = new LeOp();
         LtOp ltop = new LtOp();
-        Operator[] ops = {eqop, geop, gtop, leop, ltop};
+        NeOp neop = new NeOp();
+        Operator[] ops = {eqop, geop, gtop, leop, ltop, neop};
         final String TEST = "TEST";
         for (DummyMod d : sets) {
             for (Player<?> p : d.ps) {

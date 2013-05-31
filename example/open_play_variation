@@ -1,0 +1,14 @@
+// in this variation, the best junior that did not advance to the final bracket will advance
+
+"open" : open_play {
+    player_source: "../example/players";
+    send_to: "final", top 3 all;
+    send_to: "final", top 1 (all.Junior \ top 3 all);
+}
+
+"final" : bracket {
+    reset_levels;
+    group_by: 2;
+    play_until: 1;
+    advance: 1;
+}
