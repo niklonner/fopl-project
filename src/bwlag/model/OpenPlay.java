@@ -6,6 +6,11 @@ import java.util.*;
 
 import org.apache.batik.svggen.*;
 
+/* Subtournament consisting of only one node, which all players advance from.
+ * Its only purpose is to provide ordering, really.
+ * Uses an underlying Bracket.
+ */
+
 public class OpenPlay<ResultType> extends SubTournament<ResultType> {
     private Bracket<ResultType> bracket;
     private List<Player<ResultType>> tmpReceiveHook;

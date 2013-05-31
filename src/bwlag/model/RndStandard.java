@@ -2,6 +2,8 @@ package bwlag.model;
 
 import java.util.*;
 
+/* Standard random generator. Generates a list of integers. */
+
 public class RndStandard implements model.RandomGenerator<List<Integer>> {
     private static Random rnd = new Random();
     private static final int NUM_GAMES = 6;

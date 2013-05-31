@@ -11,6 +11,12 @@ import java.awt.geom.*;
 import org.apache.batik.swing.*;
 import org.apache.batik.svggen.*;
 
+/* Bracket-style subtournaments.
+ * Organizes the players into faceoffs using BracketNodes, enclosed in BracketNodeLayers.
+ * Also contains a FinalLayerNode that gathers the play_until winners into a node to allow
+ * ranking of them and sending them to different subtournaments.
+ */
+
 public class Bracket<ResultType> extends SubTournament<ResultType> {
     private int groupBy = 2;
     private int advancing = 1;

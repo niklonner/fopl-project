@@ -1,10 +1,8 @@
 "Swagger" - a DSL for specifying tournament schemes.
-
 ====================================================
 
 
 Requirements
-
 ------------
 
 The following program is most easily built using GNU Make and expects a Java 7 environment.
@@ -13,26 +11,22 @@ Please make sure that the java and javac commands are available on the PATH.
 
 
 How to compile
-
 --------------
 
 Execute "make" in the project folder.
 
 
 How to start the schema editor/viewer
-
 -------------------------------------
 
 Execute "make run" in the project or "src" folder.
 
 How to start the text application
-
 ---------------------------------
 
 Execute "make runtextapp [SOURCE=source_file]" in the "src" folder.
 
 Presentation
-
 ------------
 
 The slides from the presentation can be found under the "Downloads" tab
@@ -41,7 +35,6 @@ at the repository's website.
 
 
 Project directory overview
-
 --------------------------
 
 The project is divided into several folders, the purpose of which are explained below:
@@ -71,7 +64,6 @@ The packages located in the source directory are fairly self-explanatory but her
 - *bwlag:* bwlag contains the model and parse subpackages that fulfil the same functionality of the previous similarly named packages. It also contains the application subpackage, which contains TextApplication.java
 
 The Swag language
-
 -----------------
 
 ### State of the language implementation
@@ -121,25 +113,23 @@ Note that the order of subtournaments in the source file is significant. If subt
 Additionally, the generated tournament data structure preserves the order of declaration of subtournaments, which may be used by applications.
 
 The Play language
-
 -----------------
 
 The play language is simply a list of players coupled with their attributes, delimited by newlines. The player entries are written in the following form:
 
-“<player name>” = <attribute>, <attribute>, … , <attribute>
+“&lt;player name&gt;” = &lt;attribute&gt;, &lt;attribute&gt;, … , &lt;attribute&gt;
 
 An attribute can either be written as:
 
-<attribute name>
+&lt;attribute name&gt;
 
 or
 
-<attribute name>:<value>
+&lt;attribute name&gt;:&lt;value&gt;
 
 where <value> can be any (integer or decimal) number, or a string encased in double quotes.
 
 About brackets
-
 --------------
 
 If brackets are not well-formed, the behaviour is unspecified.
@@ -156,7 +146,6 @@ If the number of players entering the bracket at any level is not divisible by `
 
 
 Bwlag
-
 -----
 
 The Bwlag language is an extension of the general Swag language. It features bowling-specific stuff such as ranking of players and more specific printing of players, and also a new subtournament type: `open_play`. An `open_play`-style tournament is a bracket with only one faceoff, where all advances. It suports the `send_to` and `play_until` statements, with the same semantics as for brackets.

@@ -5,6 +5,10 @@ import model.*;
 import parse.*;
 import java.util.*;
 
+/* Parser for bwlag files. Simply inputs a RandomGenerator, PrettyPrinterScore and Comparator to the
+ * general TournamentParser.
+ */
+
 public class BwlagParser {
     private static TournamentParser parser = new TournamentParser(Arrays.asList("bwlag.model"));
 

@@ -4,6 +4,11 @@ import java.util.*;
 import sets.*;
 import parse.*;
 
+/* A tournament is simply a sequence of subtournaments. This class glues them together
+ * and provides lookup by name and iteration. Note that iteration order is the same
+ * as the order in which the subtournaments were added.
+ */
+
 public class Tournament<ResultType> implements Iterable<SubTournament<ResultType>> {
     public  LinkedHashMap<String,SubTournament<ResultType>> subTournaments;
 

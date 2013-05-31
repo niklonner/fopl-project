@@ -3,6 +3,8 @@ package bwlag.model;
 import java.util.*;
 import model.*;
 
+/* Standard pretty-printer */
+
 public class PPSStandard implements model.PrettyPrinterScore<List<Integer>> {
     public String prettyPrint(Player<List<Integer>> p) {
         List<Integer> ls = p.resultIsSet() ? p.getResult() : null;

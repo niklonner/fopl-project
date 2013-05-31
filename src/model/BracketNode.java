@@ -2,8 +2,10 @@ package model;
 
 import java.util.*;
 
-/*
-
+/* BracketNode
+ * Used by Bracket-style subtournaments. Keeps track of how many players that should be
+ * in the node (though it is not enforced) and how many that advances. Could probably
+ * be used by subtournaments other than Bracket-styled such.
  */
 
 public class BracketNode<ResultType> extends Node<ResultType> {

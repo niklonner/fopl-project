@@ -6,10 +6,11 @@ import sets.*;
 import parse.*;
 
 /*
-  Class for nodes in tournament graph.
-  abstract method addResult is responsible for ranking players and sending them to next node or subtournament in the competition.
-  End applications should observe Nodes objects to respond to changes.
-*/
+ * Class for nodes in tournament graph.
+ * abstract method addResult is responsible for ranking players and sending them to next
+ * node or subtournament in the competition.
+ *  End applications should observe Nodes objects to respond to changes.
+ */
 
 public abstract class Node<ResultType> extends Observable
     implements PlayerReceiver<ResultType> {

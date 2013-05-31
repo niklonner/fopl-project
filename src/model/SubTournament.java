@@ -7,6 +7,14 @@ import parse.*;
 
 import org.apache.batik.svggen.*;
 
+/* Abstract superclass of all subtournaments.
+ * The underlying structure (nodes etc.) of a subtournament is not created until startBuild()
+ * is called. At that point, all players that will participate in the subtournament MUST have
+ * been added.
+ * Observers of subtournaments are automatically added as observers of all nodes in the
+ * subtournament.
+ */
+
 public abstract class SubTournament<ResultType>
     extends Observable implements PlayerReceiver<ResultType>, Iterable<Node<ResultType>> {
     private static int nextId = 0;
@@ -31,14 +39,6 @@ public abstract class SubTournament<ResultType>
     protected SubTournament() {
         //      this("subtournament " + nextId);
     }
-
-    //
-    // protected SubTournament(String name) {
-    //  id = nextId++;
-    //  this.name = name;
-    //  players = new ArrayList<>();
-    //  nodes = new ArrayList<>();
-    // }
 
     protected SubTournament(Builder<?,ResultType> builder) {
         id = nextId++;

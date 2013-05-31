@@ -3,6 +3,9 @@ package bwlag.model;
 import model.*;
 import java.util.*;
 
+/* Standard comparator for bowling scores.
+ */
+
 public class CmpStandard implements Comparator<Player<List<Integer>>>{
 
     public int compare(Player<List<Integer>> p1, Player<List<Integer>> p2) {

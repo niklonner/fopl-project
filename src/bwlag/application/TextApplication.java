@@ -7,7 +7,7 @@ import util.*;
 import java.util.*;
 import java.io.*;
 
-// interactively asks the user to input results, and shows updates (advancements of players)
+/* Program that interactively asks the user to input results, and shows updates (advancements of players) */
 
 public class TextApplication {
     public static void main(String[] args) throws IOException {
