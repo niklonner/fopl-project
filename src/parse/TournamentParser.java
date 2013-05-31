@@ -54,19 +54,19 @@ public class TournamentParser {
         }
     }
 
-    public void parse(String path) throws ContextException {
+    /*    public void parse(String path) throws ContextException {
         try {
             Swag.Absyn.Prog parse_tree = BasicParser.parseTournamentFile(path);
             Worker visitor = new Worker(packages);
             if(parse_tree != null) {
                 parse_tree.accept(visitor);
-                visitor.subTournaments.get(0).startBuild();
+                //            visitor.subTournaments.get(0).startBuild();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         }
-    }
+        }*/
 
     public <T> Tournament<T> parse(String path, RandomGenerator<T> rnd, Comparator<Player<T>> cmp, PrettyPrinterScore<T> pps) throws ContextException, FileNotFoundException {
         Swag.Absyn.Prog parse_tree;
@@ -91,16 +91,18 @@ public class TournamentParser {
         Worker visitor = new Worker(packages);
         if(parse_tree != null) {
             parse_tree.accept(visitor);
-            /*subt =*/ visitor.subTournaments.get(0).startBuild();
         }
         //        return visitor.subTournaments;
-        return null;
+        List<model.SubTournament<?>> ret = new ArrayList<>();
+        for (model.SubTournament<?> t : visitor.superTournament) {
+            ret.add(t);
+            t.startBuild();
+        }
+        return ret;
     }
 
     public static class Worker implements Visitor {
         Deque<Object> stack = new ArrayDeque<>();
-
-        Map<String,model.SubTournament<?>> subTournaments = new TreeMap<>();
 
         Tournament<Integer> superTournament = new Tournament<>();
             

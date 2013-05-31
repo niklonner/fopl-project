@@ -1,5 +1,5 @@
 "simple" : bracket {
-    player_source: "../src/players";
+    player_source: "../example/players";
     group_by: 4;
     advance: 2;
     play_until: 2;
