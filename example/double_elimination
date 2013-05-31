@@ -5,8 +5,8 @@
     group_by: 2;
     advance: 1;
     play_until: 1;
-//    send_losers_to: "loser bracket";
     send_to: "final", top 1 all;
+//    send_losers_to: "loser bracket";
 //    send_to_per_node: "loser bracket", all.losses;
     send_to_per_node: "loser bracket", all.losses != 0;
 }

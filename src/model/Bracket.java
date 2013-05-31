@@ -12,9 +12,9 @@ import org.apache.batik.swing.*;
 import org.apache.batik.svggen.*;
 
 public class Bracket<ResultType> extends SubTournament<ResultType> {
-    private int groupBy;
-    private int advancing;
-    private int playUntil;
+    private int groupBy = 2;
+    private int advancing = 1;
+    private int playUntil = 1;
     private boolean resetLevels;
     private java.util.List<Pair<String, SetModifier<Player<ResultType>>>> receivers = new ArrayList<>();
     // perNodeReceivers allows sendto statements per node. This is used for sending losers of each node, for example.
