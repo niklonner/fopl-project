@@ -1,5 +1,9 @@
 package util;
 
+/**
+ * Thrown for syntax errors.
+ * Contains the context in which the error arised.
+ */
 public class ContextException extends Exception {
     private int line = -1;
     private String context = "";

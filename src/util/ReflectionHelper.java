@@ -8,6 +8,10 @@ import java.util.Arrays;
 import sets.*;
 import java.lang.reflect.*;
 
+/**
+ * Hides some of the intricacies of working with java reflection and provides some
+ * useful helper methods for method calling.
+ */
 public class ReflectionHelper {
 
     /**
