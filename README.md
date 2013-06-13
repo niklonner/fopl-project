@@ -3,7 +3,7 @@ _Temporary disclaimer: Note that this was originally hosted (and still is) at [B
 "Swagger" - a DSL for specifying tournament schemes.
 ====================================================
 
-By [niklonner (Niklas Lönnerfors)](http://github.com/niklonner) and [Aerivan (Daniel Ström)](http://github.com/Aerivan).
+Project in the course _Frontiers of Programming Languages_ at Chalmers University of Technology, Gothenburg, Sweden. By [niklonner (Niklas Lönnerfors)](http://github.com/niklonner) and [Aerivan (Daniel Ström)](http://github.com/Aerivan).
 
 Requirements
 ------------
