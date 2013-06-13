@@ -1,3 +1,5 @@
+_Temporary disclaimer: Note that this was originally hosted (and still is) at [Bitbucket](http://bitbucket.org/aerivan/fopl-project). Hopefully all branches were up-to-date locally on my machine but I have not tested this (will do though)._
+
 "Swagger" - a DSL for specifying tournament schemes.
 ====================================================
 
