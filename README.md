@@ -5,6 +5,22 @@ _Temporary disclaimer: Note that this was originally hosted (and still is) at [B
 
 Project in the course _Frontiers of Programming Languages_ at Chalmers University of Technology, Gothenburg, Sweden. By [niklonner (Niklas Lönnerfors)](http://github.com/niklonner) and [Aerivan (Daniel Ström)](http://github.com/Aerivan).
 
+Since the project may be used when applying for jobs, here is a rough division of our work:
+
+- Grammars: Daniel
+- src/bwlag: Niklas
+- src/model:
+    - Player.java and graphical parts: Daniel
+    - Everything else: Niklas
+- src/parse:
+    - Parsing of set modifiers: Niklas
+    - Everything else: Daniel
+- src/sets: Niklas
+- src/util: Daniel
+- src/viewer: Daniel
+- test/sets: Niklas
+- test/util: Daniel
+
 Requirements
 ------------
 
